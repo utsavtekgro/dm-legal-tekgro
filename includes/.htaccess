@@ -1,0 +1,2 @@
+# Deny all direct web access to PHP includes/partials and data files.
+Require all denied

@@ -1,0 +1,47 @@
+# DM Legal Services — Apache configuration
+
+# ---- Security headers ----
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# ---- Disable directory listing ----
+Options -Indexes
+
+# ---- Block access to dotfiles, includes, and data sources ----
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS in production (uncomment once a TLS certificate is installed)
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Friendly 404 for unmatched routes
+  ErrorDocument 404 /404.php
+</IfModule>
+
+# ---- Custom error document fallback (non-rewrite Apache) ----
+ErrorDocument 404 /404.php
+
+# ---- Caching for static assets ----
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
