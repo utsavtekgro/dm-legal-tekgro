@@ -13,13 +13,20 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
 
 <!-- ============ HERO ============ -->
 <div class="hero">
-  <div class="content-width hero__inner">
+  <div class="content-width hero__inner" class="content-width py-8 lg:py-16 h-full flex flex-col gap-8 lg:gap-12 justify-between items-center
+      lg:flex-row">
     <div class="hero__content">
       <?php render_breadcrumb([]); /* breadcrumb hidden on home, matching Breadcrumb.tsx */ ?>
-      <h1 class="main-header">Trusted Legal Solutions – Protecting Your Rights, Securing Your Future</h1>
-      <p class="body-text">Expert legal guidance in family law, business disputes, immigration, and more &ndash; tailored to your needs.</p>
+      <h1 class="main-header">Clear Legal Advice for Life’s Toughest Moments</h1>
+      <p class="body-text">Providing trusted representation in family law, criminal law, migration law, civil litigation, and business law &ndash; protecting your rights and guiding your future.</p>
       <ul class="hero__features">
-        <?php foreach (['Expert Legal Guidance', 'Tailored Legal Solutions', 'Free Initial Consultation', 'Fast & Efficient Process'] as $feature): ?>
+
+      <?php foreach ([
+    'Comprehensive Legal Expertise',
+    'Trusted Representation Across Australia',
+    'Free Initial Consultation',
+    'Efficient, Client-Focused Process'
+] as $feature): ?>
           <li><img src="<?= url('assets/icons/tick.svg') ?>" alt="" width="20" height="20"><?= e($feature) ?></li>
         <?php endforeach; ?>
       </ul>
@@ -39,15 +46,20 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
           <input class="form-control" type="tel" name="phone" placeholder="Mobile Number" required pattern="^[0-9+()\-\s]{6,20}$">
         </div>
         <select class="form-control" name="matterType" required>
+
           <option value="">Select Matter Type</option>
-          <option value="immigration">Immigration</option>
-          <option value="visa">Visa</option>
-          <option value="legal">Legal</option>
-          <option value="other">Other</option>
+          <option value="immigration">Family Law & Property Settlement</option>
+          <option value="visa">Commercial & Business Law</option>
+          <option value="retail">Retail Lease Matter</option>
+          <option value="professional">Professional Registration (AHPRA)</option>
+          <option value="debt">Debt Recovery</option>
+          <option value="immigration-visa">Immigration & Visa Matter</option>
+          <option value="criminal">Criminal Law Matter</option>
+          <option value="other">Other Legal Matter</option>
         </select>
         <textarea class="form-control" name="message" placeholder="Any Extra Message (optional)" rows="3"></textarea>
         <p class="form-success" data-form-message hidden></p>
-        <button type="submit" class="btn btn-primary btn-full">Claim Free 5 Minute Advice</button>
+        <button type="submit" class="btn btn-primary btn-full">Book Free Consultation</button>
       </form>
     </div>
   </div>
@@ -60,7 +72,7 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
     <p class="body-text text-justify">Our professional team at DM Legal Services is committed to delivering exceptional legal support across all areas of law, ensuring each client receives the guidance, representation, and attention they deserve. We stay constantly updated on the latest legal developments and regulatory changes to prevent unnecessary delays and provide solutions that are both practical and effective. We work exclusively with fully accredited and highly experienced legal professionals who are recognised for their integrity, skill, and dedication to client success. Navigating the Australian legal system can be challenging, and our role is to simplify this process for you with personalised strategies, clear advice, and hands-on support to achieve the best possible outcome.</p>
   </div>
   <div class="split-section__media">
-    <img src="<?= url('assets/images/AboutDMLegalService.jpeg') ?>" alt="About DM Legal Services">
+    <img src="<?= url('assets/images/AboutDMLegalService.jpeg') ?>" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" alt="About DM Legal Services">
   </div>
 </section>
 
@@ -98,8 +110,10 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
 <section class="attraction-contact" data-aos="fade-up">
   <div class="content-width attraction-contact__row">
     <h2 class="main-header attraction-contact__title">Limited slots available &mdash; Book your consultation now</h2>
-    <div class="attraction-contact__intro">
+    <divf class="attraction-contact__intro">
       <p style="max-width:18rem;">You can choose any format of consultation with our lawyer:</p>
+      <a class="btn btn-primary btn-consult-up" href="<?= url('book-your-lawyer.php') ?>">Book a Consultationup</a>
+
       <div class="attraction-contact__options">
         <?php foreach ($options as $option): ?>
           <div class="attraction-contact__option">
@@ -108,8 +122,8 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
           </div>
         <?php endforeach; ?>
       </div>
-      <a class="btn btn-primary" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation</a>
-    </div>
+      <a class="btn btn-primary btn-consult" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation</a>
+    </divf>
   </div>
 </section>
 

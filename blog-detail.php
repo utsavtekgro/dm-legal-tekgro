@@ -18,9 +18,10 @@ $pageTitle = e($blog['title']) . ' | DM Legal';
 $pageDescription = mb_substr($blog['excerpt'], 0, 160);
 include __DIR__ . '/includes/head.php';
 
-$heroTitle = 'Protect Your Future at an Affordable, Transparent Cost with Our Fixed Fees';
-$heroSubtitle = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
-$heroFeatures = ['Fixed Fees', 'Hourly rates', 'Manage Legal Costs', 'No Win, No Fees'];
+$heroTitle = 'Protect Your Financial Future with Transparent Legal Fees';
+$heroSubtitle = 'Our experienced lawyers provide clear and predictable pricing, helping you manage your legal matters with confidence.';
+$heroFeatures = ['Fixed Fees for common legal services', 'Hourly Rates where appropriate
+', 'Manage Legal Costs Effectively', 'Transparent and upfront pricing'];
 $heroPrimaryBtn = ['text' => 'Book free consultation', 'href' => 'book-your-lawyer.php'];
 $heroSecondaryBtn = ['text' => 'Explore more', 'href' => 'index.php'];
 $heroRightSide = 'image';

@@ -22,15 +22,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
             <img src="<?= url('assets/icons/map.svg') ?>" alt="" width="15" height="15"><?= e(SITE_ADDRESS_SHORT) ?>
           </a>
         </div>
-        <div class="topbar-search">
-          <form data-search-form data-live action="#" role="search" aria-label="Search the site">
-            <div class="topbar-search__field">
-              <input type="text" name="q" placeholder="Enter search terms" aria-label="Search blog posts">
-              <button type="submit" aria-label="Search">&#128269;</button>
-            </div>
-          </form>
-          <div class="topbar-search__results" data-search-results></div>
-        </div>
+      
       </div>
     </div>
 
@@ -53,9 +45,8 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
         </div>
 
         <div class="header-mobile-toggle">
-          <button type="button" data-menu-close hidden aria-label="Close menu">&#10005;</button>
-          <button type="button" data-search-toggle aria-label="Toggle search">&#128269;</button>
-          <button type="button" data-menu-open aria-label="Open menu">&#9776;</button>
+          <button type="button" data-menu-close hidden aria-label="Close menu" class="btn-toogle">&#10005;</button>
+          <button type="button" data-menu-open aria-label="Open menu" class="btn-toogle">&#9776;</button>
         </div>
       </div>
     </div>
@@ -82,26 +73,21 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
             <a href="<?= url($link['href']) ?>"><?= e($link['label']) ?></a>
           <?php endforeach; ?>
         </div>
-      </div>
-      <div class="header-mobile-panel__buttons content-width">
+        <div class="header-mobile-panel__buttons content-width">
         <a class="btn btn-secondary btn-full" href="tel:<?= e(SITE_PHONE_TEL) ?>"><?= e(SITE_PHONE_DISPLAY) ?></a>
         <a class="btn btn-primary btn-full" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation</a>
       </div>
+      </div>
     </div>
+      
 
     <!-- Search overlay -->
     <div class="search-overlay" data-search-overlay>
       <div class="content-width search-overlay__head">
-        <div>
-          <p class="sub-heading" style="color:var(--color-primary)">SEARCH OUR SITE</p>
-          <span>ENTER SEARCH TERM AND PRESS GO</span>
-        </div>
+      
         <button type="button" data-search-close aria-label="Close search">&#10005;</button>
       </div>
       <div class="content-width search-overlay__body">
-        <form data-search-form data-live role="search" aria-label="Search the site">
-          <input type="text" name="q" placeholder="Enter search term and press Go" aria-label="Search blog posts">
-        </form>
         <div class="search-overlay__results" data-search-results></div>
       </div>
     </div>

@@ -50,62 +50,58 @@
    * Header: scroll-direction hide + mobile menu + search overlay
    * ------------------------------------------------------------- */
   function initHeader() {
-    var header = document.querySelector(".site-header");
-    if (!header) return;
+  const header = document.querySelector('.site-header'),
+        menuBtn = document.querySelector('[data-menu-open]'),
+        closeBtn = document.querySelector('[data-menu-close]'),
+        mobilePanel = document.querySelector('[data-mobile-panel]'),
+        searchBtn = document.querySelector('[data-search-toggle]'),
+        searchOverlay = document.querySelector('[data-search-overlay]'),
+        searchClose = document.querySelector('[data-search-close]');
 
-    var lastScrollY = window.scrollY;
-    window.addEventListener("scroll", function () {
-      var currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY + 10) {
-        header.classList.add("is-hidden");
-      } else if (currentScrollY < lastScrollY - 10) {
-        header.classList.remove("is-hidden");
-      }
-      lastScrollY = currentScrollY;
-    });
+  let lastY = window.scrollY;
 
-    var menuBtn = document.querySelector("[data-menu-open]");
-    var closeBtn = document.querySelector("[data-menu-close]");
-    var mobilePanel = document.querySelector("[data-mobile-panel]");
-    var searchBtn = document.querySelector("[data-search-toggle]");
-    var searchOverlay = document.querySelector("[data-search-overlay]");
-    var searchCloseBtn = document.querySelector("[data-search-close]");
+  window.addEventListener('scroll', () => {
+    header?.classList.toggle('is-hidden', window.scrollY > lastY + 10);
+    if (window.scrollY < lastY - 10) header?.classList.remove('is-hidden');
+    lastY = window.scrollY;
+  });
 
-    function lockScroll(lock) {
-      document.body.style.overflow = lock ? "hidden" : "";
+  const lockScroll = () => {
+    document.body.style.overflow =
+      mobilePanel?.classList.contains('is-open') ||
+      searchOverlay?.classList.contains('is-open')
+        ? 'hidden'
+        : '';
+  };
+
+  const toggleMenu = (open) => {
+    mobilePanel?.classList.toggle('is-open', open);
+    if (menuBtn) menuBtn.style.display = open ? 'none' : 'block';
+    if (closeBtn) closeBtn.style.display = open ? 'block' : 'none';
+    lockScroll();
+  };
+
+  const toggleSearch = (open) => {
+    searchOverlay?.classList.toggle('is-open', open);
+    lockScroll();
+  };
+
+  closeBtn && (closeBtn.style.display = 'none');
+
+  menuBtn?.addEventListener('click', () => toggleMenu(true));
+  closeBtn?.addEventListener('click', () => toggleMenu(false));
+  searchBtn?.addEventListener('click', () => toggleSearch(true));
+  searchClose?.addEventListener('click', () => toggleSearch(false));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      toggleMenu(false);
+      toggleSearch(false);
     }
+  });
+}
 
-    function setMobileOpen(open) {
-      if (!mobilePanel) return;
-      mobilePanel.classList.toggle("is-open", open);
-      if (menuBtn) menuBtn.hidden = open;
-      if (closeBtn) closeBtn.hidden = !open;
-      lockScroll(open || (searchOverlay && searchOverlay.classList.contains("is-open")));
-    }
-
-    function setSearchOpen(open) {
-      if (!searchOverlay) return;
-      searchOverlay.classList.toggle("is-open", open);
-      lockScroll(open || (mobilePanel && mobilePanel.classList.contains("is-open")));
-      if (open) {
-        var input = searchOverlay.querySelector("input[type=search], input[type=text]");
-        if (input) input.focus();
-      }
-    }
-
-    if (menuBtn) menuBtn.addEventListener("click", function () { setMobileOpen(true); });
-    if (closeBtn) closeBtn.addEventListener("click", function () { setMobileOpen(false); });
-    if (searchBtn) searchBtn.addEventListener("click", function () { setSearchOpen(true); });
-    if (searchCloseBtn) searchCloseBtn.addEventListener("click", function () { setSearchOpen(false); });
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") {
-        setMobileOpen(false);
-        setSearchOpen(false);
-      }
-    });
-  }
-
+document.addEventListener('DOMContentLoaded', initHeader);
   /* ----------------------------------------------------------------
    * Mobile bottom nav: hide on scroll down
    * ------------------------------------------------------------- */

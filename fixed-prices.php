@@ -8,7 +8,7 @@ include __DIR__ . '/includes/head.php';
 
 $heroTitle = 'Protect Your Financial Future at an Affordable, Transparent Cost with Our Fixed Fee';
 $heroSubtitle = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
-$heroFeatures = ['Fixed Fees', 'Hourly rates', 'Manage Legal Costs Effectively', 'No Win, No Fees'];
+$heroFeatures = ['Fixed Fees for common legal services', 'Hourly Rates where appropriate', 'Manage Legal Costs Effectively', 'Transparent and upfront pricing'];
 $heroPrimaryBtn = ['text' => 'Book free consultation', 'href' => 'book-your-lawyer.php'];
 $heroSecondaryBtn = ['text' => 'Explore more', 'href' => 'index.php'];
 $heroRightSide = 'image';

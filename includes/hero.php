@@ -58,7 +58,7 @@ $heroMinimal = $heroMinimal ?? false; // mirrors showHeaderAndBreadcrumb in Hero
           </select>
           <textarea class="form-control" name="message" placeholder="Any Extra Message (optional)" aria-label="Additional message (optional)" rows="3"></textarea>
           <p class="form-success" data-form-message hidden></p>
-          <button type="submit" class="btn btn-primary btn-full">Claim Free 5 Minute Advice</button>
+          <button type="submit" class="btn btn-primary btn-full">Book Free Consultation</button>
         </form>
       </div>
     <?php elseif ($heroRightSide === 'image' && !empty($heroImage)): ?>

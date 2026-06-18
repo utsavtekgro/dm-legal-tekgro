@@ -12,12 +12,13 @@ if ($currentPage !== 'contact.php') {
     <div class="footer-top">
       <div class="footer-top__brand">
         <img src="<?= url('assets/images/logo.svg') ?>" alt="DM Legal logo" width="130" height="40">
-        <p class="body-text">Empowering your Journey through DM Legal</p>
-        <p class="body-text">DM LEGAL AUSTRALIA | ABN 32 626 700 981</p>
-      </div>
+        <p class="body-text">Empowering your journey through expert, client-focused legal guidance across family, criminal, business, and migration law.</p>
+<p class="body-text" style="font-weight: bold;">
+    DM LEGAL AUSTRALIA | ABN 32 626 700 981
+</p>      </div>
       <div class="footer-top__badges">
-        <img src="<?= url('assets/icons/img8.png') ?>" alt="" width="70" height="40">
-        <img src="<?= url('assets/icons/img9.svg') ?>" alt="" width="130" height="40">
+        <img src="<?= url('assets/icons/img8.png') ?>" alt="" width="80" height="80">
+        <img src="<?= url('assets/icons/img9.svg') ?>" alt="" width="130" height="80">
       </div>
     </div>
 
