@@ -330,7 +330,7 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
       <div class="faq-item">
         <div class="faq-item__head">
           <h3><?= e($faq['question']) ?></h3>
-          <span class="faq-item__icon" aria-hidden="true">+</span>
+          <span class="faq-item__icon" aria-hidden="true"><svg viewBox="0 0 448 512"><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg></span>
         </div>
         <div class="faq-item__panel">
           <p class="body-text"><?= e($faq['answer']) ?></p>

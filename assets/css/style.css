@@ -1680,6 +1680,17 @@ textarea.form-control {
 
 .faq-item__icon {
   flex-shrink: 0;
+  display: inline-flex;
+  color: var(--color-secondary);
+}
+.faq-item__icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  transition: transform 0.3s ease-in-out;
+}
+.faq-item.is-open .faq-item__icon svg {
+  transform: rotate(45deg);
 }
 .faq-item__panel {
   max-height: 0;

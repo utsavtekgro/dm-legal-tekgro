@@ -299,7 +299,7 @@ $helpClientsData = [
     ],
 ];
 
-$actionsData = [
+$actionsData0 = [
     'title' => 'Business Law',
     'description' => "Our business law services support companies through all stages of growth and development:",
     'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
@@ -319,15 +319,15 @@ $actionsData = [
 $actionsData1 = [
     'title' => 'Commercial Law',
     'description' => "We provide comprehensive commercial law services to businesses across Sydney, including:",
-    'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
+    'sub-description' => "Our commercial team understands the practical realities of running a business and provides clear, actionable advice to protect your commercial interests and resolve disputes efficiently.",
     'actions' => [
         ['question' => 'Retail lease agreements and lease disputes', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
         ['question' => 'Commercial contract drafting and review', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
         ['question' => 'Business transaction documentation', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Contract dispute resolution', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Commercial negotiation and mediation', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Lease renewal and variation matters', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Commercial tenancy issues', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Contract dispute resolution', 'answer' => 'We represent clients in resolving disputes efficiently and fairly.'],
+        ['question' => 'Commercial negotiation and mediation', 'answer' => 'We assist with negotiations and mediations to avoid litigation when possible.'],
+        ['question' => 'Lease renewal and variation matters', 'answer' => 'We provide advice and representation in lease renewals and variations.'],
+        ['question' => 'Commercial tenancy issues', 'answer' => 'We guide clients through complex commercial tenancy disputes.'],
     ],
     'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
 ];
@@ -337,68 +337,77 @@ $actionsData2 = [
     'description' => "We provide experienced criminal defence representation across all NSW courts, from Local Court matters to District and Supreme Court proceedings. Our criminal law practice covers a comprehensive range of offences:",
     'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
     'actions' => [
-        ['question' => 'Drug offences', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
-        ['question' => 'Traffic offences', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
-        ['question' => 'Domestic Violence & AVO matters', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Assault & violence offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Property & theft offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Weapons & firearms offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Serious indictable offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Criminal defence approach', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Drug offences', 'answer' => 'We handle drug possession, trafficking, cultivation, steroid offences, proceeds of crime, and diversion programs.'],
+        ['question' => 'Traffic offences', 'answer' => 'We represent clients in drink and drug driving, dangerous driving, disqualified driving, speeding, and licence appeals.'],
+        ['question' => 'Domestic Violence & AVO matters', 'answer' => 'We defend against AVOs, breaches, domestic assault charges, and variation or revocation of protection orders.'],
+        ['question' => 'Assault & violence offences', 'answer' => 'We handle common assault, assault occasioning actual bodily harm, affray, violent disorder, grievous bodily harm, and self-defence cases.'],
+        ['question' => 'Property & theft offences', 'answer' => 'We represent clients in larceny, shoplifting, break and enter, robbery, fraud, dishonesty, and receiving stolen property cases.'],
+        ['question' => 'Weapons & firearms offences', 'answer' => 'We cover unauthorised possession, prohibited weapons, public place offences, and firearms licensing matters.'],
+        ['question' => 'Serious indictable offences', 'answer' => 'We provide representation for murder, manslaughter, sexual assault, serious drug supply, armed robbery, and Supreme/District Court cases.'],
+        ['question' => 'Criminal defence approach', 'answer' => 'Our experienced lawyers provide strategic defence to achieve the best possible outcome, including bail, plea negotiations, trials, appeals, and mental health defences.'],
         ],
     'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
 ];
 
 $actionsData3 = [
-    'title' => 'Protecting Your Rights: Actions We Can Take',
+    'title' => 'Debt Recovery',
     'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'sub-description' => "We work with clients across NSW to recover outstanding debts efficiently, balancing firm action with practical, cost-effective strategies.",
     'actions' => [
-        ['question' => 'Letters of demand and formal debt collection notices', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
-        ['question' => 'Negotiated payment arrangements', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
-        ['question' => 'Local Court debt recovery proceedings', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Letters of demand and formal debt collection notices', 'answer' => 'We send formal notices and manage debt recovery communications.'],
+        ['question' => 'Negotiated payment arrangements', 'answer' => 'We assist in negotiating payment plans to recover debts efficiently.'],
+        ['question' => 'Local Court debt recovery proceedings', 'answer' => 'We represent clients in Local Court debt recovery actions.'],
+        ['question' => 'Judgment enforcement', 'answer' => 'We assist in enforcing judgments to secure debt repayment.'],
+        ['question' => 'Commercial debt collection', 'answer' => 'We handle business debt recovery matters strategically.'],
+        ['question' => 'Personal debt recovery', 'answer' => 'We recover personal debts while balancing cost and likelihood of success.'],
+        ['question' => 'Creditors statutory demands', 'answer' => 'We prepare and manage statutory demands for creditors.'],
     ],
     'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
 ];
 
 $actionsData4 = [
-    'title' => 'Protecting Your Rights: Actions We Can Take',
-    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'title' => 'Family Law',
+    'description' => "Our family law practice specializes in complex property settlements and financial disputes in the Federal Circuit and Family Court. We provide expert representation in:",
+    'sub-description' => "With extensive experience in high-value and financially complex matters, we use detailed forensic analysis to protect your interests and ensure fair property division. Our approach combines strategic negotiation with robust court representation when required.",
     'actions' => [
-        ['question' => 'Defence Strategies', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
-        ['question' => 'Negotiating Plea Bargain & Sentencing', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
-        ['question' => 'Appeals & Case Review', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Seeking Bail', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Property settlements and asset division', 'answer' => 'We assist clients in achieving fair and equitable division of property and assets.'],
+        ['question' => 'Forensic financial analysis and asset tracing', 'answer' => 'We work with financial experts to identify, analyse, and trace complex asset structures.'],
+        ['question' => 'Disclosure disputes and hidden asset investigations', 'answer' => 'We address non-disclosure issues to ensure full and transparent financial disclosure.'],
+        ['question' => 'Spousal maintenance matters', 'answer' => 'We provide advice and representation in spousal maintenance applications and disputes.'],
+        ['question' => 'Parenting arrangements and custody disputes', 'answer' =>  'We assist with resolving parenting arrangements in the best interests of the child.'],
+        ['question' => 'Binding Financial Agreements' , 'answer' => 'We prepare and review binding financial agreements to provide financial certainty.'],
+        ['question' => 'Divorce applications' , 'answer' => 'We guide clients through the divorce process efficiently and professionally.'],
     ],
     'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
 ];
 
 $actionsData5 = [
-    'title' => 'Protecting Your Rights: Actions We Can Take',
-    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'title' => 'Immigration Law',
+    'description' => "Our immigration law practice specializes in complex visa matters, Administrative Review Tribunal (ART) appeals, and Federal Circuit Court judicial review proceedings. We provide comprehensive representation across all stages of the immigration process:.",
+    'sub-description' => "Early advice is critical in immigration matters – visa refusals have strict time limits for appeals (typically 21 days for ART review, 35 days for Federal Circuit Court judicial review). Contact us immediately if your visa has been refused or cancelled.",
+
     'actions' => [
-        ['question' => 'Defence Strategies', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
-        ['question' => 'Negotiating Plea Bargain & Sentencing', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
-        ['question' => 'Appeals & Case Review', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Seeking Bail', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Visa applications & renewals', 'answer' => 'We assist with partner, student, family reunion, skilled, business, temporary work, visitor, working holiday, and citizenship visas.'],
+        ['question' => 'Visa refusals & character issues', 'answer' => 'We handle Section 501/116 cancellations, ministerial interventions, bridging visas, and directions 90/99 submissions.'],
+        ['question' => 'ART appeals and hearings', 'answer' => 'We manage ART appeals including merit review, written submissions, witness statements, expert reports, oral submissions, and refugee/protection claims.'],
+        ['question' => 'Federal Circuit Court judicial review', 'answer' => 'We provide representation for judicial review of ART decisions, including jurisdictional error, procedural fairness, and appeals.'],
+        ['question' => 'Migration compliance & visa conditions', 'answer' => 'We assist with condition waivers, work rights, reporting obligations, and compliance issues.'],
+        ['question' => 'Deportation & removal matters', 'answer' => 'We handle visa cancellations, revocations, detention matters, and removal proceedings.'],
+        ['question' => 'Immigration law approach', 'answer' => 'We combine detailed knowledge of migration law and policy with practical advocacy skills to provide strategic representation.'],
     ],
     'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
 ];
 
-$actionsData6 = [
-    'title' => 'Protecting Your Rights: Actions We Can Take',
-    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
-    'actions' => [
-        ['question' => 'Defence Strategies', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
-        ['question' => 'Negotiating Plea Bargain & Sentencing', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
-        ['question' => 'Appeals & Case Review', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
-        ['question' => 'Seeking Bail', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
-    ],
-    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+// Lookup so practice-area.php can pick the right actions block by ?slug=
+$actionsDataBySlug = [
+    'business-law' => $actionsData0,
+    'commercial-law' => $actionsData1,
+    'criminal-law' => $actionsData2,
+    'debt-recovery' => $actionsData3,
+    'family-law' => $actionsData4,
+    'immigration-law' => $actionsData5,
 ];
+
 
 $videoSectionData = [
     'videoUrl' => '',
