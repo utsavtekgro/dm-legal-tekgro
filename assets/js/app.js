@@ -224,17 +224,6 @@
   /* ----------------------------------------------------------------
    * Under-development modal
    * ------------------------------------------------------------- */
-  function initModal() {
-    var overlay = document.querySelector("[data-dev-modal]");
-    if (!overlay) return;
-    setTimeout(function () { overlay.hidden = false; }, 100);
-    var closeBtn = overlay.querySelector("[data-modal-close]");
-    if (closeBtn) closeBtn.addEventListener("click", function () { overlay.hidden = true; });
-    overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) overlay.hidden = true;
-    });
-  }
-
   /* ----------------------------------------------------------------
    * FAQ accordion (single-open) + generic accordion blocks
    * ------------------------------------------------------------- */
@@ -353,44 +342,13 @@
     });
   }
 
-  /* ----------------------------------------------------------------
-   * Client-side only form submission (no backend): validates, runs the
-   * honeypot check, then shows an inline success message and resets.
-   * Markup: <form data-ajax-form>
-   * ------------------------------------------------------------- */
-  function initAjaxForms() {
-    document.querySelectorAll("[data-ajax-form]").forEach(function (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var messageBox = form.querySelector("[data-form-message]");
-        var honeypot = form.querySelector('input[name="website"]');
-
-        if (honeypot && honeypot.value) return; // bot trap, silently drop
-
-        if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-        }
-
-        if (messageBox) {
-          messageBox.textContent = "Thank you! We'll be in touch shortly.";
-          messageBox.className = "form-success";
-          messageBox.hidden = false;
-        }
-        form.reset();
-      });
-    });
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     initScrollReveal();
     initHeader();
     initMobileBottomNav();
     initSearch();
-    initModal();
     initAccordions();
     initTabs();
     initCarousels();
-    initAjaxForms();
   });
 })();

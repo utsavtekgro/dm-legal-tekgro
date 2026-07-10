@@ -1,0 +1,47 @@
+/* Admin-only styling for the native repeater meta boxes. */
+
+.dmlegal-repeater__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: flex-start;
+	padding: 12px;
+	margin-bottom: 10px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.dmlegal-repeater__field {
+	display: flex;
+	flex-direction: column;
+	min-width: 200px;
+}
+
+.dmlegal-repeater__field label {
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.dmlegal-repeater__field input[type="text"],
+.dmlegal-repeater__field textarea {
+	min-width: 240px;
+}
+
+.dmlegal-repeater__media-preview img {
+	display: block;
+	margin-bottom: 6px;
+	border: 1px solid #dcdcde;
+}
+
+.dmlegal-repeater__remove {
+	color: #b32d2e;
+	align-self: center;
+}
+
+.dmlegal-repeater__add {
+	margin-top: 4px;
+}
+
+.dmlegal-repeater [data-repeater-template] {
+	display: none;
+}

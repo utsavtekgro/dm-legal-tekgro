@@ -1,7 +1,10 @@
 /**
  * Multi-step "Book a Lawyer" form: date picker calendar, step navigation,
- * progress indicator and summary recap. Replaces StepForm.tsx / StepOne.tsx /
- * StepTwo.tsx / StepThree.tsx (framer-motion + react-day-picker + react-hook-form).
+ * progress indicator and summary recap, layered over the CF7-rendered
+ * booking form. [data-booking-form] is the wrapping container in
+ * page-book-a-lawyer.php, not the <form> tag itself — CF7's form template
+ * only controls the form's inner content, not attributes on <form>
+ * itself, so this can't select the <form> directly.
  */
 (function () {
   "use strict";
@@ -27,15 +30,30 @@
       if (step === 3) updateSummary();
     }
 
+    /**
+     * CF7 doesn't set the native HTML5 `required` attribute (it validates
+     * server-side/via its own AJAX layer instead) — it marks required
+     * fields with aria-required="true". Check those directly so a user
+     * can't advance past a step with an empty required field, since CF7's
+     * own error messages would otherwise attach to fields on a hidden,
+     * inactive step.
+     */
     function validatePanel(step) {
       var panel = form.querySelector('[data-step-panel="' + step + '"]');
-      var fields = panel.querySelectorAll("input[required], select[required], textarea[required]");
+      var fields = panel.querySelectorAll('[aria-required="true"]');
       var valid = true;
       fields.forEach(function (field) {
-        if (!field.checkValidity()) { field.reportValidity(); valid = false; }
+        if (!field.value || !field.value.trim()) {
+          field.setAttribute("aria-invalid", "true");
+          valid = false;
+        } else {
+          field.setAttribute("aria-invalid", "false");
+        }
       });
+      if (!valid && panel.querySelector('[aria-invalid="true"]')) {
+        panel.querySelector('[aria-invalid="true"]').focus();
+      }
       if (step === 1 && !dateInput.value) {
-        alert("Please select a date.");
         valid = false;
       }
       return valid;
@@ -52,7 +70,7 @@
 
     /* ---------------- Calendar (StepOne.tsx) ---------------- */
     var calendarEl = form.querySelector("[data-calendar]");
-    var dateInput = form.querySelector('input[name="date"]');
+    var dateInput = form.querySelector('input[name="booking-date"]');
     var summaryDate = form.querySelector("[data-summary-date]");
     var monthLabel = calendarEl.querySelector("[data-calendar-month]");
     var grid = calendarEl.querySelector("[data-calendar-grid]");
