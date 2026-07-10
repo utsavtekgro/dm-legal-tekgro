@@ -300,6 +300,95 @@ $helpClientsData = [
 ];
 
 $actionsData = [
+    'title' => 'Business Law',
+    'description' => "Our business law services support companies through all stages of growth and development:",
+    'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
+    'actions' => [
+        ['question' => 'Company formation and business structuring', 'answer' => 'We assist with establishing businesses and choosing the right structure..'],
+        ['question' => 'Business compliance and regulatory matters', 'answer' => 'We ensure your business meets all relevant compliance and regulatory requirements.'],
+        ['question' => 'Shareholder agreements and disputes', 'answer' => 'We draft and resolve disputes concerning shareholder agreements.'],
+        ['question' => 'Business restructuring', 'answer' => 'We provide legal guidance for company reorganizations and restructuring.'],
+        ['question' => 'Commercial disputes and litigation', 'answer' => 'We represent businesses in disputes and litigation matters.'],
+        ['question' => 'Commercial disputes and litigation', 'answer' => 'We provide legal guidance for company reorganizations and restructuring.'],
+        ['question' => 'Corporate governance advice', 'answer' => ' We advise on governance policies and best practices for business operations.'],
+        ['question' => 'Business contract review', 'answer' => 'We review and advise on contracts to safeguard business interests.'],
+    ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData1 = [
+    'title' => 'Commercial Law',
+    'description' => "We provide comprehensive commercial law services to businesses across Sydney, including:",
+    'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
+    'actions' => [
+        ['question' => 'Retail lease agreements and lease disputes', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
+        ['question' => 'Commercial contract drafting and review', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
+        ['question' => 'Business transaction documentation', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
+        ['question' => 'Contract dispute resolution', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Commercial negotiation and mediation', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Lease renewal and variation matters', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Commercial tenancy issues', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+    ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData2 = [
+    'title' => 'Criminal Law',
+    'description' => "We provide experienced criminal defence representation across all NSW courts, from Local Court matters to District and Supreme Court proceedings. Our criminal law practice covers a comprehensive range of offences:",
+    'sub-description' => "We work with small to medium enterprises across various industries, providing strategic legal support that aligns with your business objectives.:",
+    'actions' => [
+        ['question' => 'Drug offences', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
+        ['question' => 'Traffic offences', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
+        ['question' => 'Domestic Violence & AVO matters', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
+        ['question' => 'Assault & violence offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Property & theft offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Weapons & firearms offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Serious indictable offences', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Criminal defence approach', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData3 = [
+    'title' => 'Protecting Your Rights: Actions We Can Take',
+    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'actions' => [
+        ['question' => 'Letters of demand and formal debt collection notices', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
+        ['question' => 'Negotiated payment arrangements', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
+        ['question' => 'Local Court debt recovery proceedings', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
+        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+        ['question' => 'Judgment enforcement', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+    ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData4 = [
+    'title' => 'Protecting Your Rights: Actions We Can Take',
+    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'actions' => [
+        ['question' => 'Defence Strategies', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
+        ['question' => 'Negotiating Plea Bargain & Sentencing', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
+        ['question' => 'Appeals & Case Review', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
+        ['question' => 'Seeking Bail', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+    ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData5 = [
+    'title' => 'Protecting Your Rights: Actions We Can Take',
+    'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
+    'actions' => [
+        ['question' => 'Defence Strategies', 'answer' => 'We build a tailored defence strategy based on the specific facts and evidence in your matter.'],
+        ['question' => 'Negotiating Plea Bargain & Sentencing', 'answer' => 'Where appropriate, we negotiate with prosecutors to achieve the most favourable outcome available.'],
+        ['question' => 'Appeals & Case Review', 'answer' => 'We review unfavourable outcomes for grounds of appeal and advise on the prospects of success.'],
+        ['question' => 'Seeking Bail', 'answer' => 'We act quickly to prepare and present strong bail applications on your behalf.'],
+    ],
+    'images' => ['/assets/images/img1.png', '/assets/images/img2.png', '/assets/images/img3.png', '/assets/images/img4.png'],
+];
+
+$actionsData6 = [
     'title' => 'Protecting Your Rights: Actions We Can Take',
     'description' => "At DM Legal, we understand that your legal matter is important to you. Our experienced solicitors guide you through every available action, from early intervention to court representation, with a strategy tailored to your circumstances.",
     'actions' => [

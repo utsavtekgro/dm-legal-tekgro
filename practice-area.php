@@ -44,6 +44,8 @@ if ($slug !== '' && $service) {
               </div>
             <?php endforeach; ?>
           </div>
+          <p class="body-text mt-4"><?= e($actionsData['sub-description']) ?></p>
+
         </div>
         <div class="actions-images">
           <?php foreach ($actionsData['images'] as $i => $img): ?>

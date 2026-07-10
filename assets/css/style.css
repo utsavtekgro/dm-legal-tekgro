@@ -1674,6 +1674,7 @@ textarea.form-control {
 .faq-item__head h3 {
   font-weight: 600;
   color: #000;
+  font-size: 16px;
   transition: color var(--transition);
 }
 
@@ -1687,7 +1688,6 @@ textarea.form-control {
 }
 .faq-item.is-open .faq-item__panel {
   max-height: 500px;
-  margin-top: 0.75rem;
 }
 
 .faq-cta {
@@ -3048,6 +3048,8 @@ textarea.form-control {
 }
 @media (min-width: 1024px) {
   .booking-grid {
+  margin-top: 15rem;
+
     grid-template-columns: repeat(2, 1fr);
   }
 }
