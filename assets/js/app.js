@@ -382,6 +382,35 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+   * Team section swiper (Swiper.js, grid of 2 rows per page)
+   * ------------------------------------------------------------- */
+  function initTeamSwiper() {
+    var el = document.querySelector(".team-swiper");
+    if (!el || typeof Swiper === "undefined") return;
+    new Swiper(el, {
+      spaceBetween: 20,
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      grid: { rows: 1 },
+      rewind: true,
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      pagination: { el: el.querySelector(".swiper-pagination"), clickable: true },
+      navigation: {
+        nextEl: el.querySelector(".swiper-button-next"),
+        prevEl: el.querySelector(".swiper-button-prev"),
+      },
+      breakpoints: {
+        640: { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 20, grid: { rows: 2, fill: "row" } },
+        1024: { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 24, grid: { rows: 2, fill: "row" } },
+      },
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initScrollReveal();
     initHeader();
@@ -391,6 +420,7 @@
     initAccordions();
     initTabs();
     initCarousels();
+    initTeamSwiper();
     initAjaxForms();
   });
 })();

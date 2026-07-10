@@ -49,7 +49,7 @@
     <div class="footer-top mt-5">
       <div class="footer-top__brand">
         <img src="<?= url('assets/images/logo.svg') ?>" alt="DM Legal logo" width="130" height="40">
-        <p class="body-text">Empowering your journey through expert, client-focused legal guidance across family, criminal, business, and migration law.</p>
+        <p class="body-text">Empowering your journey through DM Legal.</p>
 <p class="body-text fw-bold">
     DM LEGAL AUSTRALIA | ABN 32 626 700 981
 </p>      </div>
@@ -131,6 +131,7 @@
     ];
 }, $blogs), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?></script>
 
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 <script src="<?= url('assets/js/app.js') ?>" defer></script>
 <?php foreach ($pageScripts ?? [] as $script): ?>
   <script src="<?= url($script) ?>" defer></script>

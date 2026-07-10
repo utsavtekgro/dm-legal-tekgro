@@ -1507,20 +1507,44 @@ textarea.form-control {
   font-weight: 700;
   color: #1f2937;
 }
-.team-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
+.team-swiper {
+  width: 100%;
+  min-width: 0;
+  padding-bottom: 2.5rem;
 }
-@media (min-width: 640px) {
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.team-swiper .swiper-slide {
+  height: auto;
 }
-@media (min-width: 1024px) {
-  .team-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.team-swiper .swiper-pagination-bullet {
+  width: 1.25rem;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: #d1d5db;
+  opacity: 1;
+}
+.team-swiper .swiper-pagination-bullet-active {
+  background: var(--color-secondary);
+}
+.team-swiper .swiper-button-prev,
+.team-swiper .swiper-button-next {
+  top: 45%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.team-swiper .swiper-button-prev::after,
+.team-swiper .swiper-button-next::after {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+.team-swiper .swiper-button-prev {
+  left: -0.5rem;
+}
+.team-swiper .swiper-button-next {
+  right: -0.5rem;
 }
 .card-team {
   position: relative;

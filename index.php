@@ -225,35 +225,6 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
   </div>
 </section>
 
-
-<!-- ============ HOW WE WORK ============ -->
-<section class="content-width content-gapping text-center">
-  <div data-aos="fade-up">
-    <h2 class="secondary-header">How We Work</h2>
-    <p class="body-text section-lead">Our team of experienced family lawyers is dedicated to providing comprehensive
-      assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
-  </div>
-  <div class="steps-grid">
-    <div class="steps-grid__list">
-      <?php foreach ($steps as $i => $step): ?>
-        <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
-          <div class="step-card">
-            <div class="step-card__icon"><img src="<?= url($step['image']) ?>" alt="" width="40" height="40"></div>
-            <h3><?= e($step['title']) ?></h3>
-            <p><?= e($step['description']) ?></p>
-          </div>
-          <?php if ($i < count($steps) - 1): ?>
-            <div class="step-arrow-down"><img src="<?= url('assets/icons/arrow-down.svg') ?>" alt="" width="30" height="30">
-            </div>
-            <div class="step-arrow-right"><img src="<?= url('assets/icons/arrow.svg') ?>" alt="" width="80" height="60">
-            </div>
-          <?php endif; ?>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
 <!-- ============ NEWS CAROUSEL ============ -->
 <section class="content-width content-gapping">
   <div class="section-heading" data-aos="fade-up">
@@ -283,6 +254,135 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
     <a class="btn btn-primary" href="<?= url('blogs.php') ?>">View All</a>
   </div>
 </section>
+
+
+
+<!-- ============ OUR TEAM INTRO ============ -->
+<section class="content-width content-gapping">
+  <h2 class="secondary-header text-center">Meet the team for your problems</h2>
+  <div class="split-section" data-aos="fade-up">
+    <div class="text-stack">
+      <p class="body-text text-justify">At DM Legal Services, we believe every client deserves confidence, clarity, and
+        peace of mind when facing legal challenges. No matter the complexity of your case, our experienced team is here
+        to guide you with skill, dedication, and unwavering support.</p>
+      <p class="body-text text-justify">We combine decades of legal experience with a personalised approach to
+        understand your unique circumstances, goals, and concerns, designed to protect your rights and secure the best
+        possible outcome for you.</p>
+      <p class="body-text text-justify">Our clients trust us because we handle every matter with professionalism,
+        integrity, and meticulous attention to detail from your first consultation through to resolution.</p>
+      <a class="btn btn-primary" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation</a>
+    </div>
+    <div class="split-section__media">
+      <img src="<?= url('assets/images/TrustedLegalCar.jpg') ?>" alt="Trusted legal care" loading="lazy"
+        decoding="async">
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============ HOW WE WORK ============ -->
+<section class="content-width content-gapping text-center">
+  <div data-aos="fade-up">
+    <h2 class="secondary-header">How We Work</h2>
+    <p class="body-text section-lead">Our team of experienced family lawyers is dedicated to providing comprehensive
+      assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="steps-grid__list">
+      <?php foreach ($steps as $i => $step): ?>
+        <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
+          <div class="step-card">
+            <div class="step-card__icon"><img src="<?= url($step['image']) ?>" alt="" width="40" height="40"></div>
+            <h3><?= e($step['title']) ?></h3>
+            <p><?= e($step['description']) ?></p>
+          </div>
+          <?php if ($i < count($steps) - 1): ?>
+            <div class="step-arrow-down"><img src="<?= url('assets/icons/arrow-down.svg') ?>" alt="" width="30" height="30">
+            </div>
+            <div class="step-arrow-right"><img src="<?= url('assets/icons/arrow.svg') ?>" alt="" width="80" height="60">
+            </div>
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============ DYNAMIC CONTENT ============ -->
+<section class="content-width content-gapping">
+  <h2 class="secondary-header text-center">Why Choose DM Legal Services</h2>
+  <div class="text-stack mt-4" data-aos="fade-up">
+    <?php foreach (explode("\n\n", trim($dynamicContentText)) as $para): ?>
+      <p class="body-text text-justify"><?= e($para) ?></p>
+    <?php endforeach; ?>
+  </div>
+</section>
+
+<!-- ============ TEAM SECTION ============ -->
+<section class="content-width content-gapping team-section" data-aos="fade-up">
+  <div class="team-section__intro">
+    <h2 class="main-header text-secondary">Meet the team for your problems</h2>
+    <p>It&rsquo;s hard to pick one word to describe our brand of civil rights and employment law advocacy.</p>
+    <p>But let&rsquo;s start with<br><span class="highlight">Relentless.</span></p>
+    <a class="btn btn-primary" href="<?= url('case-studies.php') ?>">Explore Our Case Study</a>
+  </div>
+  <div class="team-swiper swiper">
+    <div class="swiper-wrapper">
+      <?php foreach ($teamMembers as $member): ?>
+        <div class="swiper-slide">
+          <div class="card-team">
+            <img src="<?= url($member['image']) ?>" alt="<?= e($member['name']) ?>" loading="lazy" decoding="async">
+            <div class="card-team__overlay card-team__overlay--<?= $member['overlayColor'] === 'blue' ? 'blue' : 'gold' ?>">
+              <h3><?= e($member['name']) ?></h3>
+              <p><?= e($member['role']) ?></p>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+    <div class="swiper-pagination"></div>
+    <button type="button" class="swiper-button-prev" aria-label="Previous team members"></button>
+    <button type="button" class="swiper-button-next" aria-label="Next team members"></button>
+  </div>
+</section>
+
+
+
+
+<!-- ============ FAQ ============ -->
+<section class="content-width content-gapping">
+  <h2 class="secondary-header text-center">Frequently Asked Questions</h2>
+  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing
+    comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <div class="faq-list" data-faq-list>
+    <?php foreach ($consultationCostFAQ as $faq): ?>
+      <div class="faq-item">
+        <div class="faq-item__head">
+          <h3><?= e($faq['question']) ?></h3>
+          <span class="faq-item__icon" aria-hidden="true">+</span>
+        </div>
+        <div class="faq-item__panel">
+          <p class="body-text"><?= e($faq['answer']) ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+  <div class="faq-cta">
+    <div class="faq-cta__avatars">
+      <img src="<?= url('assets/images/avatar1.png') ?>" alt="">
+      <img src="<?= url('assets/images/avatar2.png') ?>" alt="">
+      <img src="<?= url('assets/images/avatar3.png') ?>" alt="">
+    </div>
+    <h3>Direct Connect With Us</h3>
+    <p>Can&rsquo;t find the answer you&rsquo;re looking for? Please chat to our friendly team.</p>
+    <a class="btn btn-primary" href="<?= url('contact.php') ?>">Contact Us</a>
+  </div>
+</section>
+
+
 
 <!-- ============ LATEST BLOGS ============ -->
 <section class="content-width content-gapping" data-aos="fade-up">
@@ -320,35 +420,6 @@ $dynamicContentText = "At DM Legal Services, we understand that choosing the rig
   </div>
 </section>
 
-<!-- ============ FAQ ============ -->
-<section class="content-width content-gapping">
-  <h2 class="secondary-header text-center">Frequently Asked Questions</h2>
-  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing
-    comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
-  <div class="faq-list" data-faq-list>
-    <?php foreach ($consultationCostFAQ as $faq): ?>
-      <div class="faq-item">
-        <div class="faq-item__head">
-          <h3><?= e($faq['question']) ?></h3>
-          <span class="faq-item__icon" aria-hidden="true"><svg viewBox="0 0 448 512"><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg></span>
-        </div>
-        <div class="faq-item__panel">
-          <p class="body-text"><?= e($faq['answer']) ?></p>
-        </div>
-      </div>
-    <?php endforeach; ?>
-  </div>
-  <div class="faq-cta">
-    <div class="faq-cta__avatars">
-      <img src="<?= url('assets/images/avatar1.png') ?>" alt="">
-      <img src="<?= url('assets/images/avatar2.png') ?>" alt="">
-      <img src="<?= url('assets/images/avatar3.png') ?>" alt="">
-    </div>
-    <h3>Direct Connect With Us</h3>
-    <p>Can&rsquo;t find the answer you&rsquo;re looking for? Please chat to our friendly team.</p>
-    <a class="btn btn-primary" href="<?= url('contact.php') ?>">Contact Us</a>
-  </div>
-</section>
 
 
 
