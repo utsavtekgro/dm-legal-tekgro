@@ -1,10 +1,10 @@
 <?php
 /** Fixed Prices page — converted from src/app/fixed-prices/page.tsx + LegalFeesSection.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $pageTitle = 'Fixed Prices | DM Legal';
 $pageDescription = 'Transparent, fixed-fee legal pricing by practice area at DM Legal Services.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = 'Protect Your Financial Future at an Affordable, Transparent Cost with Our Fixed Fee';
 $heroSubtitle = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
@@ -14,14 +14,15 @@ $heroSecondaryBtn = ['text' => 'Explore more', 'href' => 'index.php'];
 $heroRightSide = 'image';
 $heroImage = '/assets/images/fixed-fees-img.png';
 $heroBreadcrumb = [['label' => 'Fixed Prices']];
-include __DIR__ . '/includes/hero.php';
+
+include 'includes/hero.php';
 ?>
 
 <!-- ============ WHY FIXED FEES ============ -->
 <section class="content-width content-gapping text-center">
   <div data-aos="fade-up">
     <h2 class="secondary-header">Why Choose Fixed Fees</h2>
-    <p class="body-text" style="max-width:48rem;margin:0 auto 3rem;">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
+    <p class="body-text section-lead">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
   </div>
   <div class="steps-grid">
     <div class="steps-grid__list">
@@ -34,7 +35,7 @@ include __DIR__ . '/includes/hero.php';
           </div>
           <?php if ($i < count($fixedFeesStep) - 1): ?>
             <div class="step-arrow-down"><img src="<?= url('assets/icons/arrow-down.svg') ?>" alt="" width="30" height="30"></div>
-            <div class="step-arrow-right"><img src="<?= url('assets/icons/arrow.svg') ?>" alt="" width="60" height="60"></div>
+            <div class="step-arrow-right"><img src="<?= url('assets/icons/arrow.svg') ?>" alt="" width="80" height="60"></div>
           <?php endif; ?>
         </div>
       <?php endforeach; ?>
@@ -47,7 +48,7 @@ include __DIR__ . '/includes/hero.php';
   <div class="content-width attraction-contact__row">
     <h2 class="main-header attraction-contact__title">Limited slots available &mdash; Book your consultation now</h2>
     <div class="attraction-contact__intro">
-      <p style="max-width:18rem;">You can choose any format of consultation with our lawyer:</p>
+      <p class="measure-sm">You can choose any format of consultation with our lawyer:</p>
       <div class="attraction-contact__options">
         <?php foreach ($options as $option): ?>
           <div class="attraction-contact__option">
@@ -64,7 +65,7 @@ include __DIR__ . '/includes/hero.php';
 <!-- ============ LEGAL FEES BY PRACTICE AREA ============ -->
 <section class="content-width content-gapping">
   <div class="section-heading">
-    <h1 class="secondary-header"><?= e($legalFeesData['title']) ?></h1>
+    <h2 class="secondary-header"><?= e($legalFeesData['title']) ?></h2>
     <p class="body-text"><?= e($legalFeesData['subtitle']) ?></p>
   </div>
 
@@ -80,7 +81,7 @@ include __DIR__ . '/includes/hero.php';
         <div class="services-grid">
           <?php foreach ($area['services'] as $j => $svc): ?>
             <div class="card-fee" data-aos="fade-up" data-aos-delay="<?= $j * 100 ?>">
-              <img src="<?= url($svc['image']) ?>" alt="<?= e($svc['title']) ?>">
+              <img src="<?= url($svc['image']) ?>" alt="<?= e($svc['title']) ?>" loading="lazy" decoding="async">
               <h3><?= e($svc['title']) ?></h3>
               <ul>
                 <?php foreach ($svc['fees'] as $fee): ?>
@@ -96,7 +97,7 @@ include __DIR__ . '/includes/hero.php';
     </div>
   <?php endforeach; ?>
 
-  <div class="hero__buttons" style="justify-content:center;margin-top:3rem;">
+  <div class="hero__buttons btn-row--center-lg">
     <a class="btn btn-secondary" href="tel:<?= e(SITE_PHONE_TEL) ?>"><?= e(SITE_PHONE_DISPLAY) ?></a>
     <a class="btn btn-primary" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation</a>
   </div>
@@ -105,7 +106,7 @@ include __DIR__ . '/includes/hero.php';
 <!-- ============ FAQ ============ -->
 <section class="content-width content-gapping">
   <h2 class="secondary-header text-center">How Do Lawyers Charge in Australia?</h2>
-  <p class="body-text text-center" style="max-width:48rem;margin:0 auto 2.5rem;">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
   <div class="faq-list" data-faq-list>
     <?php foreach ($consultationCostFAQ as $faq): ?>
       <div class="faq-item">
@@ -132,12 +133,12 @@ include __DIR__ . '/includes/hero.php';
 <!-- ============ LATEST BLOGS ============ -->
 <section class="content-width content-gapping">
   <h2 class="secondary-header text-center">Our Latest Blogs</h2>
-  <p class="body-text text-center" style="max-width:48rem;margin:0 auto 2.5rem;">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
   <div class="blog-grid">
     <?php foreach (array_slice($blogs, 0, 3) as $blog): $slug = slugify($blog['title']); ?>
       <div class="card-blog">
         <div class="card-blog__media">
-          <a href="<?= url('blog-detail.php?slug=' . $slug) ?>"><img src="<?= url($blog['image']) ?>" alt="<?= e($blog['title']) ?>"></a>
+          <a href="<?= url('blog-detail.php?slug=' . $slug) ?>"><img src="<?= url($blog['image']) ?>" alt="<?= e($blog['title']) ?>" loading="lazy" decoding="async"></a>
         </div>
         <div class="card-blog__meta">
           <div class="card-blog__author">
@@ -159,4 +160,4 @@ include __DIR__ . '/includes/hero.php';
   </div>
 </section>
 
-<?php include __DIR__ . '/includes/foot.php'; ?>
+<?php include 'footer.php' ?>

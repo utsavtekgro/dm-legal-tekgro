@@ -1,2 +1,0 @@
-# Deny all direct web access to submission logs (contain personal data).
-Require all denied

@@ -1,11 +1,11 @@
 <?php
 /** 404 page — converted from src/app/not-found.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 http_response_code(404);
 
 $pageTitle = 'Page Not Found | DM Legal';
 $pageDescription = 'The page you are looking for could not be found.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 ?>
 
 <div class="not-found">
@@ -14,5 +14,4 @@ include __DIR__ . '/includes/head.php';
   <a href="<?= url('index.php') ?>">Go Home</a>
 </div>
 
-<?php include __DIR__ . '/includes/foot.php'; ?>
-
+<?php include 'footer.php'; ?>

@@ -1,10 +1,10 @@
 <?php
 /** Case studies listing — converted from src/app/case-studies/page.tsx + CaseStudiesSection.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $pageTitle = 'Case Studies | DM Legal';
 $pageDescription = 'Examples of how DM Legal Services has supported clients across family, business, and immigration law.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = 'Explore, Learn, and Grow – Your Journey Starts Here';
 $heroSubtitle = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
@@ -13,7 +13,7 @@ $heroPrimaryBtn = ['text' => 'Explore more', 'href' => 'index.php'];
 $heroRightSide = 'image';
 $heroImage = '/assets/images/case-studies-bgimg.png';
 $heroBreadcrumb = [['label' => 'Case Studies']];
-include __DIR__ . '/includes/hero.php';
+include 'includes/hero.php';
 ?>
 
 <section class="content-width content-gapping">
@@ -48,7 +48,7 @@ include __DIR__ . '/includes/hero.php';
     <?php foreach ($caseStudies as $cs): $slug = slugify($cs['title']);
       $keywords = mb_strtolower($cs['title'] . ' ' . implode(' ', $cs['tags'])); ?>
       <div class="card-case" data-case-card data-issue="<?= e($cs['issue']) ?>" data-practice="<?= e($cs['practiceArea']) ?>" data-keywords="<?= e($keywords) ?>">
-        <div class="card-case__media"><img src="<?= url($cs['image']) ?>" alt="<?= e($cs['title']) ?>"></div>
+        <div class="card-case__media"><img src="<?= url($cs['image']) ?>" alt="<?= e($cs['title']) ?>" loading="lazy" decoding="async"></div>
         <div class="card-case__tags">
           <?php foreach ($cs['tags'] as $tag): ?><span><?= e($tag) ?></span><?php endforeach; ?>
         </div>
@@ -68,4 +68,4 @@ include __DIR__ . '/includes/hero.php';
 
 <?php
 $pageScripts = ['assets/js/case-filter.js'];
-include __DIR__ . '/includes/foot.php';
+include 'footer.php';

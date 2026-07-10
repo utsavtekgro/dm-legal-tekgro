@@ -1,6 +1,6 @@
 <?php
 /** Case study detail — converted from src/app/case-studies/[slug]/page.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $slug = isset($_GET['slug']) ? clean_input($_GET['slug']) : '';
 $cs = $slug !== '' ? find_case_study_by_slug($slug) : null;
@@ -8,23 +8,23 @@ $cs = $slug !== '' ? find_case_study_by_slug($slug) : null;
 if (!$cs) {
     http_response_code(404);
     $pageTitle = 'Case Study Not Found | DM Legal';
-    include __DIR__ . '/includes/head.php';
+    include 'header.php';
     echo '<div class="content-width page-section text-center"><h1 class="main-header">Case study not found</h1><a class="btn btn-primary mt-4" href="' . url('case-studies.php') . '">Back to Case Studies</a></div>';
-    include __DIR__ . '/includes/foot.php';
+    include 'footer.php';
     exit;
 }
 
 $pageTitle = e($cs['title']) . ' | DM Legal Case Studies';
 $pageDescription = mb_substr($cs['excerpt'], 0, 160);
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = $cs['title'];
 $heroMinimal = true;
 $heroBreadcrumb = [['label' => 'Case Studies', 'href' => 'case-studies.php'], ['label' => $cs['title']]];
-include __DIR__ . '/includes/hero.php';
+include 'includes/hero.php';
 ?>
 
-<div class="content-width" style="display:grid;grid-template-columns:1fr;gap:2.5rem;">
+<div class="content-width stack-grid">
   <div class="blog-detail-grid">
     <article>
       <p class="body-text"><?= e($cs['description']) ?></p>
@@ -77,7 +77,7 @@ include __DIR__ . '/includes/hero.php';
         <h2 class="secondary-header">Talk to an Expert</h2>
         <div class="sidebar-card__experts">
           <?php foreach (['expert1', 'expert2', 'expert3', 'expert4', 'expert5', 'expert6'] as $expert): ?>
-            <img src="<?= url('assets/images/' . $expert . '.png') ?>" alt="">
+            <img src="<?= url('assets/images/' . $expert . '.png') ?>" alt="" loading="lazy" decoding="async">
           <?php endforeach; ?>
         </div>
         <div class="sidebar-card__buttons">
@@ -89,4 +89,4 @@ include __DIR__ . '/includes/hero.php';
   </div>
 </div>
 
-<?php include __DIR__ . '/includes/foot.php'; ?>
+<?php include 'footer.php';?>

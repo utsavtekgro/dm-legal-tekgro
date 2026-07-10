@@ -3,14 +3,15 @@
  * Book a Lawyer page — converted from src/app/book-your-lawyer/page.tsx,
  * StepForm.tsx, StepOne.tsx, StepTwo.tsx, StepThree.tsx, ContactInfo.tsx.
  */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $pageTitle = 'Book a Consultation | DM Legal';
 $pageDescription = 'Book a consultation with DM Legal Services in three simple steps.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 ?>
 
-<div class="content-width content-gapping" style="margin-top:10rem;">
+<div class="content-width content-gapping !mt-[10rem] xl:!mt-[15rem]">
+
   <div class="booking-grid">
     <div class="booking-contact">
       <div class="booking-contact__box">
@@ -39,8 +40,7 @@ include __DIR__ . '/includes/head.php';
     </div>
 
     <div class="booking-form-panel">
-      <form data-booking-form data-ajax-form action="<?= url('api/booking.php') ?>" novalidate>
-        <?= csrf_field() ?>
+      <form data-booking-form data-ajax-form novalidate>
         <input type="text" class="honeypot" name="website" tabindex="-1" autocomplete="off">
         <input type="hidden" name="date">
 
@@ -55,7 +55,7 @@ include __DIR__ . '/includes/head.php';
             <span class="step-progress__bar"></span>
             <span class="step-progress__dot" data-step-dot="3">3</span>
           </div>
-          <div class="calendar__panel calendar" data-calendar>
+          <div class="calendar__panel calendar" data-calendar gap-5>
             <p class="label">Find a time to meet with DM Legal</p>
             <div class="calendar__head">
               <button type="button" data-calendar-prev aria-label="Previous month">&lsaquo;</button>
@@ -64,7 +64,7 @@ include __DIR__ . '/includes/head.php';
             </div>
             <div class="calendar__grid" data-calendar-grid></div>
           </div>
-          <button type="button" class="btn btn-primary btn-full" data-step-next>Next</button>
+          <button type="button" class="calendar btn btn-primary btn-full" data-step-next>Next</button>
         </div>
 
         <!-- STEP 2: Contact & case details -->
@@ -115,10 +115,10 @@ include __DIR__ . '/includes/head.php';
             <p><strong>Date:</strong> <span data-summary-date>Not selected</span></p>
           </div>
 
-          <label class="form-label" style="text-align:left;" for="bk-desc">Brief Description of Your Situation *</label>
+          <label class="form-label text-left" for="bk-desc">Brief Description of Your Situation *</label>
           <textarea class="form-control" id="bk-desc" name="description" placeholder="Write brief description" rows="4" required></textarea>
 
-          <label class="form-label" style="text-align:left;" for="bk-contact-method">Preferred Contact Method *</label>
+          <label class="form-label text-left" for="bk-contact-method">Preferred Contact Method *</label>
           <select class="form-control" id="bk-contact-method" name="contactMethod" required>
             <option value="">Select Preferred Contact</option>
             <option value="phone">Phone</option>
@@ -126,7 +126,7 @@ include __DIR__ . '/includes/head.php';
             <option value="whatsapp">WhatsApp</option>
           </select>
 
-          <label class="form-label" style="text-align:left;" for="bk-contact-time">Preferred Time for Contact *</label>
+          <label class="form-label text-left" for="bk-contact-time">Preferred Time for Contact *</label>
           <input class="form-control" id="bk-contact-time" type="time" name="contactTime" required>
 
           <p class="form-success" data-form-message hidden></p>
@@ -140,4 +140,4 @@ include __DIR__ . '/includes/head.php';
 
 <?php
 $pageScripts = ['assets/js/booking-form.js'];
-include __DIR__ . '/includes/foot.php';
+include 'footer.php';

@@ -1,10 +1,10 @@
 <?php
 /** Blog listing page — converted from src/app/blogs/page.tsx + BlogSection.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $pageTitle = 'News & Blog | DM Legal';
 $pageDescription = 'Explore legal insights and updates from DM Legal Services on family law, business law, and immigration.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = 'Explore, Learn, and Grow – Your Journey Starts Here';
 $heroSubtitle = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
@@ -13,7 +13,7 @@ $heroPrimaryBtn = ['text' => 'Explore more', 'href' => 'index.php'];
 $heroRightSide = 'image';
 $heroImage = '/assets/images/blogheroimg.png';
 $heroBreadcrumb = [['label' => 'Blogs']];
-include __DIR__ . '/includes/hero.php';
+include 'includes/hero.php';
 
 $blogCategories = ['All Information', 'Business Law', 'Immigration & Visas', 'Family & Personal Law', 'Security & Compliance'];
 ?>
@@ -36,11 +36,11 @@ $blogCategories = ['All Information', 'Business Law', 'Immigration & Visas', 'Fa
       $keywords = mb_strtolower($blog['title'] . ' ' . $blog['category'] . ' ' . implode(' ', $blog['tags'])); ?>
       <div class="card-blog" data-blog-card data-category="<?= e($blog['category']) ?>" data-keywords="<?= e($keywords) ?>">
         <div class="card-blog__media">
-          <a href="<?= url('blog-detail.php?slug=' . $slug) ?>"><img src="<?= url($blog['image']) ?>" alt="<?= e($blog['title']) ?>"></a>
+          <a href="<?= url('blog-detail.php?slug=' . $slug) ?>"><img src="<?= url($blog['image']) ?>" alt="<?= e($blog['title']) ?>" loading="lazy" decoding="async"></a>
         </div>
         <div class="card-blog__meta">
           <div class="card-blog__author">
-            <img src="<?= url($blog['author']['avatar']) ?>" alt="">
+            <img src="<?= url($blog['author']['avatar']) ?>" alt="" loading="lazy" decoding="async">
             <div>
               <p><?= e($blog['author']['name']) ?></p>
               <p><?= e($blog['author']['date']) ?></p>
@@ -67,4 +67,4 @@ $blogCategories = ['All Information', 'Business Law', 'Immigration & Visas', 'Fa
 
 <?php
 $pageScripts = ['assets/js/blog-filter.js'];
-include __DIR__ . '/includes/foot.php';
+include 'footer.php';

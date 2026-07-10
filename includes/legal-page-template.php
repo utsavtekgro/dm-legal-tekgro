@@ -5,7 +5,7 @@
  * Expects $legalPageTitle and $legalSections to be set by the including page.
  */
 ?>
-<div class="content-width content-gapping legal-section" style="margin-top:8rem;">
+<div class="content-width content-gapping legal-section offset-top-lg">
   <h1 class="main-header text-center mb-4"><?= e($legalPageTitle) ?></h1>
   <?php foreach ($legalSections as $section): ?>
     <section>

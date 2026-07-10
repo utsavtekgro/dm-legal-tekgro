@@ -1,10 +1,10 @@
 <?php
 /** FAQs page — converted from src/app/faqs/page.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $pageTitle = 'Frequently Asked Questions | DM Legal';
 $pageDescription = 'Answers to common questions about consultations, legal services, fees, and case handling at DM Legal Services.';
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = 'Trusted Legal Solutions – Protecting Your Rights, Securing Your Future';
 $heroSubtitle = 'Expert legal guidance in family law, business disputes, immigration, and more – tailored to your needs.';
@@ -14,7 +14,7 @@ $heroSecondaryBtn = ['text' => 'Leave Enquiry', 'href' => 'index.php'];
 $heroRightSide = 'image';
 $heroImage = '/assets/images/faqHeroImg.png';
 $heroBreadcrumb = [['label' => 'FAQs']];
-include __DIR__ . '/includes/hero.php';
+include 'includes/hero.php';
 ?>
 
 <!-- ============ FAQ CATEGORIES ============ -->
@@ -46,10 +46,9 @@ include __DIR__ . '/includes/hero.php';
     </div>
   <?php endforeach; ?>
 
-  <div class="form-card" style="max-width:32rem;margin:2rem auto 0;">
-    <h3 class="sub-heading text-center" style="margin-bottom:1rem;">Still Have Any Question?</h3>
-    <form data-ajax-form action="<?= url('api/contact.php') ?>" novalidate>
-      <?= csrf_field() ?>
+  <div class="form-card form-card--narrow">
+    <h3 class="sub-heading text-center mb-4">Still Have Any Question?</h3>
+    <form data-ajax-form novalidate>
       <input type="text" class="honeypot" name="website" tabindex="-1" autocomplete="off">
       <input class="form-control" type="text" name="name" placeholder="Full Name" aria-label="Full Name" required>
       <div class="form-row">
@@ -75,29 +74,4 @@ include __DIR__ . '/includes/hero.php';
   </div>
 </section>
 
-<!-- ============ HOW WE WORK ============ -->
-<section class="content-width content-gapping text-center">
-  <div data-aos="fade-up">
-    <h2 class="secondary-header">Process and Proceedings in Sydney&rsquo;s Criminal Law Courts</h2>
-    <p class="body-text" style="max-width:48rem;margin:0 auto 3rem;">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
-  </div>
-  <div class="steps-grid">
-    <div class="steps-grid__list">
-      <?php foreach ($steps as $i => $step): ?>
-        <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
-          <div class="step-card">
-            <div class="step-card__icon"><img src="<?= url($step['image']) ?>" alt="" width="40" height="40"></div>
-            <h3><?= e($step['title']) ?></h3>
-            <p><?= e($step['description']) ?></p>
-          </div>
-          <?php if ($i < count($steps) - 1): ?>
-            <div class="step-arrow-down"><img src="<?= url('assets/icons/arrow-down.svg') ?>" alt="" width="30" height="30"></div>
-            <div class="step-arrow-right"><img src="<?= url('assets/icons/arrow.svg') ?>" alt="" width="60" height="60"></div>
-          <?php endif; ?>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
-<?php include __DIR__ . '/includes/foot.php'; ?>
+<?php include  'footer.php'; ?>

@@ -59,12 +59,29 @@
         searchClose = document.querySelector('[data-search-close]');
 
   let lastY = window.scrollY;
+  let ticking = false;
+  const HIDE_AFTER = 80;   // stay visible until scrolled past the header itself
+  const DELTA = 24;        // ignore small wobbles from wheel/trackpad ticks
 
   window.addEventListener('scroll', () => {
-    header?.classList.toggle('is-hidden', window.scrollY > lastY + 10);
-    if (window.scrollY < lastY - 10) header?.classList.remove('is-hidden');
-    lastY = window.scrollY;
-  });
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const diff = y - lastY;
+      if (y <= HIDE_AFTER) {
+        header?.classList.remove('is-hidden');
+        lastY = y;
+      } else if (diff > DELTA) {
+        header?.classList.add('is-hidden');
+        lastY = y;
+      } else if (diff < -DELTA) {
+        header?.classList.remove('is-hidden');
+        lastY = y;
+      }
+      ticking = false;
+    });
+  }, { passive: true });
 
   const lockScroll = () => {
     document.body.style.overflow =
@@ -101,7 +118,6 @@
   });
 }
 
-document.addEventListener('DOMContentLoaded', initHeader);
   /* ----------------------------------------------------------------
    * Mobile bottom nav: hide on scroll down
    * ------------------------------------------------------------- */
@@ -109,11 +125,28 @@ document.addEventListener('DOMContentLoaded', initHeader);
     var nav = document.querySelector(".mobile-bottom-nav");
     if (!nav) return;
     var lastY = window.scrollY;
+    var ticking = false;
+    var HIDE_AFTER = 80;
+    var DELTA = 24;
     window.addEventListener("scroll", function () {
-      var y = window.scrollY;
-      nav.classList.toggle("is-hidden", y > lastY && y > 50);
-      lastY = y;
-    });
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY;
+        var diff = y - lastY;
+        if (y <= HIDE_AFTER) {
+          nav.classList.remove("is-hidden");
+          lastY = y;
+        } else if (diff > DELTA) {
+          nav.classList.add("is-hidden");
+          lastY = y;
+        } else if (diff < -DELTA) {
+          nav.classList.remove("is-hidden");
+          lastY = y;
+        }
+        ticking = false;
+      });
+    }, { passive: true });
   }
 
   /* ----------------------------------------------------------------
@@ -321,14 +354,14 @@ document.addEventListener('DOMContentLoaded', initHeader);
   }
 
   /* ----------------------------------------------------------------
-   * Generic AJAX form submission with CSRF + inline success/error
-   * Markup: <form data-ajax-form action="api/xxx.php">
+   * Client-side only form submission (no backend): validates, runs the
+   * honeypot check, then shows an inline success message and resets.
+   * Markup: <form data-ajax-form>
    * ------------------------------------------------------------- */
   function initAjaxForms() {
     document.querySelectorAll("[data-ajax-form]").forEach(function (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        var submitBtn = form.querySelector('button[type="submit"]');
         var messageBox = form.querySelector("[data-form-message]");
         var honeypot = form.querySelector('input[name="website"]');
 
@@ -339,32 +372,12 @@ document.addEventListener('DOMContentLoaded', initHeader);
           return;
         }
 
-        if (submitBtn) { submitBtn.disabled = true; submitBtn.dataset.originalText = submitBtn.textContent; submitBtn.textContent = "Sending..."; }
-
-        fetch(form.getAttribute("action"), {
-          method: "POST",
-          body: new FormData(form),
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (messageBox) {
-              messageBox.textContent = data.message;
-              messageBox.className = data.success ? "form-success" : "form-fail";
-              messageBox.hidden = false;
-            }
-            if (data.success) form.reset();
-          })
-          .catch(function () {
-            if (messageBox) {
-              messageBox.textContent = "Something went wrong. Please try again or call us directly.";
-              messageBox.className = "form-fail";
-              messageBox.hidden = false;
-            }
-          })
-          .finally(function () {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.originalText; }
-          });
+        if (messageBox) {
+          messageBox.textContent = "Thank you! We'll be in touch shortly.";
+          messageBox.className = "form-success";
+          messageBox.hidden = false;
+        }
+        form.reset();
       });
     });
   }

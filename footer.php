@@ -4,16 +4,55 @@
  * Converted from Footer.tsx, MobileBottomNav.tsx, UnderDevelopmentModal.tsx, LayoutClient.tsx
  */
 if ($currentPage !== 'contact.php') {
-    include __DIR__ . '/contact-footer.php';
+    include __DIR__ . '/includes/contact-footer.php';
 }
 ?>
-<footer class="site-footer">
+
+ <div class="full-map-card">
+    <iframe class="full-map-card__iframe" src="<?= e($officeInfo['mapEmbedUrl']) ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="DM Legal Services location map"></iframe>
+    <a class="full-map-card__open" href="<?= e(SITE_MAPS_URL) ?>" target="_blank" rel="noopener noreferrer">
+      Open in Maps <span aria-hidden="true">&#8599;</span>
+    </a>
+    <div class="full-map-card__panel">
+      <h3><?= e($officeInfo['name']) ?></h3>
+      <div class="full-map-card__grid">
+        <div class="full-map-card__item">
+          <img src="<?= url('assets/icons/pin-dark.svg') ?>" alt="" width="16" height="20">
+          <span><?= e($officeInfo['address']) ?></span>
+        </div>
+        <div class="full-map-card__item">
+          <img src="<?= url('assets/icons/email-dark.svg') ?>" alt="" width="17" height="13">
+          <a href="mailto:<?= e($officeInfo['email']) ?>"><?= e($officeInfo['email']) ?></a>
+        </div>
+        <?php foreach ($officeInfo['phoneNumbers'] as $phone): ?>
+          <div class="full-map-card__item">
+            <img src="<?= url('assets/icons/phone.svg') ?>" alt="" width="18" height="18">
+            <a href="tel:<?= e(preg_replace('/\s+/', '', $phone)) ?>" class="phone-link"><?= e($phone) ?></a>
+          </div>
+        <?php endforeach; ?>
+        <?php
+          preg_match('/^(.*?)\s*\((.*)\)$/', $officeInfo['hours'], $hoursParts);
+          $hoursMain = $hoursParts[1] ?? $officeInfo['hours'];
+          $hoursNote = $hoursParts[2] ?? '';
+        ?>
+        <div class="full-map-card__item">
+          <img src="<?= url('assets/icons/clock.svg') ?>" alt="" width="18" height="18">
+          <span><?= e($hoursMain) ?> <?php if ($hoursNote): ?><span class="text-danger">(<?= e($hoursNote) ?>)</span><?php endif; ?></span>
+        </div>
+      </div>
+      <div class="full-map-card__buttons">
+        <a class="btn btn-secondary" href="<?= e(SITE_MAPS_URL) ?>" target="_blank" rel="noopener noreferrer">Get Directions</a>
+        <a class="btn btn-primary" href="<?= url('book-your-lawyer.php') ?>">Book a Consultation <img src="<?= url('assets/icons/chevron-right.svg') ?>" alt="" width="14" height="14"></a>
+      </div>
+    </div>
+  </div>
+<footer class="site-footer px-5">
   <div class="content-width footer-main">
-    <div class="footer-top">
+    <div class="footer-top mt-5">
       <div class="footer-top__brand">
         <img src="<?= url('assets/images/logo.svg') ?>" alt="DM Legal logo" width="130" height="40">
         <p class="body-text">Empowering your journey through expert, client-focused legal guidance across family, criminal, business, and migration law.</p>
-<p class="body-text" style="font-weight: bold;">
+<p class="body-text fw-bold">
     DM LEGAL AUSTRALIA | ABN 32 626 700 981
 </p>      </div>
       <div class="footer-top__badges">
@@ -98,3 +137,6 @@ if ($currentPage !== 'contact.php') {
 <?php foreach ($pageScripts ?? [] as $script): ?>
   <script src="<?= url($script) ?>" defer></script>
 <?php endforeach; ?>
+</main>
+</body>
+</html>

@@ -40,9 +40,8 @@ $heroMinimal = $heroMinimal ?? false; // mirrors showHeaderAndBreadcrumb in Hero
     <?php if ($heroMinimal): /* image/form aside suppressed in minimal mode */ ?>
     <?php elseif ($heroRightSide === 'form'): ?>
       <div class="hero__aside">
-        <form class="hero-form" data-ajax-form action="<?= url('api/contact.php') ?>" novalidate>
+        <form class="hero-form" data-ajax-form novalidate>
           <h2 class="sub-heading">Get In Touch Instantly</h2>
-          <?= csrf_field() ?>
           <input type="text" class="honeypot" name="website" tabindex="-1" autocomplete="off">
           <input class="form-control" type="text" name="name" placeholder="Full Name" aria-label="Full Name" required>
           <div class="form-row">

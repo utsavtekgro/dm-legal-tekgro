@@ -1,6 +1,6 @@
 <?php
 /** Practice area inner service — converted from src/app/practice-area/[slug]/[innerSlug]/page.tsx */
-require_once __DIR__ . '/includes/config.php';
+require_once 'includes/functions.php';
 
 $slug = isset($_GET['slug']) ? clean_input($_GET['slug']) : '';
 $innerSlug = isset($_GET['inner']) ? clean_input($_GET['inner']) : '';
@@ -20,15 +20,15 @@ if ($service) {
 if (!$service || !$innerService) {
     http_response_code(404);
     $pageTitle = 'Service Not Found | DM Legal';
-    include __DIR__ . '/includes/head.php';
+    include 'header.php';
     echo '<div class="content-width page-section text-center"><h1 class="main-header">Service not found</h1><a class="btn btn-primary mt-4" href="' . url('practice-area.php') . '">Back to Practice Areas</a></div>';
-    include __DIR__ . '/includes/foot.php';
+    include 'footer.php';
     exit;
 }
 
 $pageTitle = e($innerService['title']) . ' | ' . e($service['title']) . ' | DM Legal';
 $pageDescription = mb_substr($innerService['description'], 0, 160);
-include __DIR__ . '/includes/head.php';
+include 'header.php';
 
 $heroTitle = $innerService['title'] . ' — ' . $service['title'];
 $heroMinimal = true;
@@ -37,10 +37,10 @@ $heroBreadcrumb = [
     ['label' => $service['title'], 'href' => 'practice-area.php?slug=' . $slug],
     ['label' => $innerService['title']],
 ];
-include __DIR__ . '/includes/hero.php';
+include 'includes/hero.php';
 ?>
 
-<div class="content-width" style="display:grid;grid-template-columns:1fr;gap:2.5rem;">
+<div class="content-width stack-grid">
   <div class="blog-detail-grid">
     <article>
       <div class="dropdown-tabs" data-inner-dropdown>
@@ -70,7 +70,7 @@ include __DIR__ . '/includes/hero.php';
         <?php endforeach; ?>
       </div>
 
-      <div data-faq-list class="content-gapping" style="padding-top:0;">
+      <div data-faq-list class="content-gapping pt-0">
         <h2 class="secondary-header">Drug FAQs</h2>
         <div class="faq-list">
           <?php foreach ($consultationCostFAQ as $faq): ?>
@@ -91,7 +91,7 @@ include __DIR__ . '/includes/hero.php';
         <h2 class="secondary-header">Talk to an Expert</h2>
         <div class="sidebar-card__experts">
           <?php foreach (['expert1', 'expert2', 'expert3', 'expert4', 'expert5', 'expert6'] as $expert): ?>
-            <img src="<?= url('assets/images/' . $expert . '.png') ?>" alt="">
+            <img src="<?= url('assets/images/' . $expert . '.png') ?>" alt="" loading="lazy" decoding="async">
           <?php endforeach; ?>
         </div>
         <div class="sidebar-card__buttons">
@@ -105,4 +105,4 @@ include __DIR__ . '/includes/hero.php';
 
 <?php
 $pageScripts = ['assets/js/inner-dropdown.js'];
-include __DIR__ . '/includes/foot.php';
+include 'footer.php';

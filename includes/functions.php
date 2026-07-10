@@ -1,7 +1,38 @@
 <?php
 /**
- * Shared helper functions used across all pages.
+ * Site bootstrap (constants) + shared helper functions used across all pages.
  */
+
+error_reporting(E_ALL);
+ini_set('display_errors', '0'); // never leak errors to output in production
+ini_set('log_errors', '1');
+
+define('SITE_NAME', 'DM Legal');
+define('SITE_TAGLINE', 'Expert legal advice and representation for your needs.');
+
+/**
+ * Auto-detect the base path so links/CSS/JS resolve correctly whether this
+ * project is served from the web root (http://host/) or from a subfolder
+ * (e.g. XAMPP's http://localhost/dm-legal-Project/). Falls back to ''
+ * (site root) if DOCUMENT_ROOT isn't available.
+ */
+$projectRoot = str_replace('\\', '/', dirname(__DIR__));
+$documentRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+$basePath = '';
+if ($documentRoot !== '' && strpos($projectRoot, $documentRoot) === 0) {
+    $basePath = substr($projectRoot, strlen($documentRoot));
+}
+define('BASE_URL', $basePath);
+define('ASSETS_URL', BASE_URL . '/assets');
+
+define('SITE_PHONE_DISPLAY', '0426 269 954');
+define('SITE_PHONE_TEL', '+610426269954');
+define('SITE_WHATSAPP', 'https://wa.me/+610426269954');
+define('SITE_EMAIL', 'info@dmlegalservices.com.au');
+define('SITE_ADDRESS_SHORT', 'Meriton Suites World Tower, Sydney');
+define('SITE_MAPS_URL', 'https://maps.app.goo.gl/jhzb5NCbfToYvgmy5');
+
+require_once __DIR__ . '/data.php';
 
 /** Escape a string for safe HTML output (XSS protection). */
 function e(?string $value): string
@@ -32,29 +63,6 @@ function truncate_words(string $text, int $maxWords): string
         return implode(' ', array_slice($words, 0, $maxWords)) . '....';
     }
     return $text;
-}
-
-/** Generate (or reuse) a CSRF token for the current session. */
-function csrf_token(): string
-{
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
-
-/** Render a hidden CSRF input field. */
-function csrf_field(): string
-{
-    return '<input type="hidden" name="csrf_token" value="' . e(csrf_token()) . '">';
-}
-
-/** Verify a submitted CSRF token using constant-time comparison. */
-function verify_csrf(?string $submitted): bool
-{
-    return is_string($submitted)
-        && !empty($_SESSION['csrf_token'])
-        && hash_equals($_SESSION['csrf_token'], $submitted);
 }
 
 /** Trim + strip tags from user input (defense-in-depth; output is still escaped with e() on display). */

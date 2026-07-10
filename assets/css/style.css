@@ -139,6 +139,7 @@ select {
     margin-top: 5rem;
     margin-bottom: 5rem;
   }
+
 }
 
 .hero {
@@ -804,7 +805,7 @@ select {
   overflow-x: hidden;
 }
 .footer-main {
-  padding: 2rem 0;
+  padding: 0rem 3rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -813,6 +814,7 @@ select {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 2rem;
   font-size: 0.875rem;
 }
 @media (min-width: 768px) {
@@ -879,7 +881,7 @@ select {
 .footer-acknowledgement {
   display: flex;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0rem 3rem;
   align-items: center;
 }
 .footer-acknowledgement img {
@@ -907,6 +909,8 @@ select {
 @media (min-width: 768px) {
   .footer-bottom .content-width {
     flex-direction: row;
+  padding: 0rem 3rem;
+
   }
 }
 .footer-bottom p {
@@ -1234,6 +1238,7 @@ textarea.form-control {
 /* ---------- Attraction contact ---------- */
 .attraction-contact {
   padding: 1rem;
+  background: #f9f9f9;
 }
 .attraction-contact__row {
   display: flex;
@@ -1560,26 +1565,30 @@ textarea.form-control {
   display: flex;
   justify-content: center;
 }
-.steps-grid__list {
+.steps-grid__list, .steps-grid__four {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
   place-items: center;
 }
 @media (min-width: 768px) {
-  .steps-grid__list {
+  .steps-grid__list,.steps-grid__four {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (min-width: 1280px) {
   .steps-grid__list {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
+  }
+  .steps-grid__four {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
   }
 }
 .step-item {
   position: relative;
-  width: 100%;
+  width: 80%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1627,11 +1636,16 @@ textarea.form-control {
     display: flex;
     position: absolute;
     top: 50%;
-    right: -75px;
+    right: -100px;
     transform: translateY(-50%);
   }
 }
-
+/* Hide between 764px and 1024px */
+@media (min-width: 764px) and (max-width: 1024px) {
+    .step-arrow-down {
+        display: none;
+    }
+}
 /* ---------- FAQ ---------- */
 .faq-list {
   display: flex;
@@ -1662,9 +1676,7 @@ textarea.form-control {
   color: #000;
   transition: color var(--transition);
 }
-.faq-item.is-open .faq-item__head h3 {
-  color: var(--color-secondary);
-}
+
 .faq-item__icon {
   flex-shrink: 0;
 }
@@ -2056,7 +2068,7 @@ textarea.form-control {
 .tabs button {
   padding: 0.5rem 1.25rem;
   border: 1px solid var(--color-secondary);
-  border-radius: 2rem;
+  border-radius: 6px;
   color: var(--color-secondary);
   font-weight: 600;
   font-size: 0.875rem;
@@ -2151,6 +2163,18 @@ textarea.form-control {
 }
 .social-icons-row a:hover {
   background: #dbeafe;
+}
+.social-icons-row a.icon-whatsapp {
+  background: #25d366;
+}
+.social-icons-row a.icon-whatsapp:hover {
+  background: #1fb955;
+}
+.social-icons-row a.icon-email {
+  background: var(--color-secondary);
+}
+.social-icons-row a.icon-email:hover {
+  background: #142c50;
 }
 
 .sidebar-card {
@@ -2262,6 +2286,107 @@ textarea.form-control {
   .direction-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.full-map-card {
+  position: relative;
+  margin-top: 2rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  min-height: 34rem;
+}
+.full-map-card__iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 34rem;
+  border: 0;
+}
+@media (min-width: 768px) {
+  .full-map-card {
+    min-height: 16rem;
+  }
+  .full-map-card__iframe {
+    min-height: 16rem;
+  }
+}
+.full-map-card__open {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+.full-map-card__panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 2rem);
+  max-width: 56rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  padding: 1.25rem;
+}
+@media (min-width: 640px) {
+  .full-map-card__panel {
+    width: calc(100% - 4rem);
+    padding: 1.5rem 2rem;
+  }
+}
+.full-map-card__panel h3 {
+  color: var(--color-secondary);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.full-map-card__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem 2.5rem;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 640px) {
+  .full-map-card__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.full-map-card__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+.full-map-card__item img {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.full-map-card__item a {
+  color: inherit;
+}
+.text-danger {
+  color: #dc2626;
+}
+.full-map-card__buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+.full-map-card__buttons .btn {
+  flex: 1;
+  white-space: normal;
+  text-align: center;
 }
 
 /* Blog listing toolbar */
@@ -2916,9 +3041,10 @@ textarea.form-control {
 /* Book-a-lawyer page */
 .booking-grid {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 2.5rem;
+  margin-top: 15rem;
   align-items: stretch;
+  grid-template-columns: 1fr;
 }
 @media (min-width: 1024px) {
   .booking-grid {
@@ -3194,7 +3320,7 @@ textarea.form-control {
 
 .calendar {
   max-width: 22rem;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 .calendar__head {
   display: flex;
@@ -3311,4 +3437,139 @@ textarea.form-control {
   .search-overlay {
     display: none !important;
   }
+}
+
+/* ==========================================================================
+   Extracted inline-style utilities
+   --------------------------------------------------------------------------
+   Added during the front-end cleanup. Each class reproduces the EXACT values
+   of a repeated inline style="" that previously lived in the PHP templates,
+   so the rendered output is unchanged — only the markup is cleaner and the
+   CSS is centralised here. Placed last so equal-specificity class rules win
+   over the base component defaults they intentionally override.
+   ========================================================================== */
+
+/* Constrained, centred lead paragraph beneath a section heading */
+.section-lead {
+  max-width: 48rem;
+  margin: 0 auto 3rem;
+}
+.section-lead--tight {
+  max-width: 48rem;
+  margin: 0 auto 2.5rem;
+}
+.section-lead--flush {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Narrow intro copy (e.g. consultation-format prompt) */
+.measure-sm {
+  max-width: 18rem;
+}
+
+/* Centred button rows (extends .hero__buttons) */
+.btn-row--center-md {
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+.btn-row--center-lg {
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+/* Single-column stack wrapper used by the detail templates */
+.stack-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+/* Absolutely-positioned cover image that fills its relative parent */
+.img-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: transparent;
+}
+
+/* Google-rating / review typography */
+.rating-score {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+.muted-xs {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.muted-sm {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+.muted-role {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Small typographic helpers */
+.text-secondary {
+  color: var(--color-secondary);
+}
+.text-left {
+  text-align: left;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.fw-bold {
+  font-weight: 700;
+}
+.w-full {
+  width: 100%;
+}
+.pt-0 {
+  padding-top: 0;
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+.phone-link {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Top offsets that clear the fixed header on hero-less pages */
+.offset-top-lg {
+  margin-top: 8rem;
+}
+.offset-top-xl {
+  margin-top: 10rem;
+}
+
+/* Narrow, centred form card */
+.form-card--narrow {
+  max-width: 32rem;
+  margin: 2rem auto 0;
+}
+
+/* Small responsive safeguard (additive — leaves the existing design intact).
+   Wraps long unbroken words, emails, or URLs so they can't force horizontal
+   scroll on very narrow (~320px) screens. Only affects content that would
+   otherwise overflow; ordinary text is unchanged. */
+body {
+  overflow-wrap: break-word;
+}
+
+/* Keyboard-only focus indicator — improves keyboard navigation (WCAG 2.4.7).
+   :focus-visible targets keyboard/AT users only, so pointer users see no
+   change and the resting visual design is untouched. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+[data-menu-open]:focus-visible,
+[data-menu-close]:focus-visible {
+  outline: 2px solid var(--color-secondary-500);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
