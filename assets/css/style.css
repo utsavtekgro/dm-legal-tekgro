@@ -1578,8 +1578,7 @@ textarea.form-control {
 }
 @media (min-width: 1280px) {
   .steps-grid__list {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
   }
   .steps-grid__four {
     grid-template-columns: repeat(4, 1fr);
@@ -1636,7 +1635,7 @@ textarea.form-control {
     display: flex;
     position: absolute;
     top: 50%;
-    right: -100px;
+    right: -95px;
     transform: translateY(-50%);
   }
 }

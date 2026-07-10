@@ -3,9 +3,7 @@
  * Site footer + mobile bottom nav + "under development" modal + closing scripts.
  * Converted from Footer.tsx, MobileBottomNav.tsx, UnderDevelopmentModal.tsx, LayoutClient.tsx
  */
-if ($currentPage !== 'contact.php') {
-    include __DIR__ . '/includes/contact-footer.php';
-}
+    include '/footer.php';
 ?>
 
  <div class="full-map-card">
