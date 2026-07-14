@@ -161,11 +161,28 @@ $dm_ac = dm_legal_ac_args(
 </section>
 
 <!-- ============ FAQ ============ -->
+<?php
+/*
+ * Editable via the "FAQ Section" metabox (Pages → Fixed Prices).
+ * Blank fields fall back to these defaults.
+ */
+$dm_faq = dm_legal_faq_args(
+	array(
+		'heading'      => 'How Do Lawyers Charge in Australia?',
+		'lead'         => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.',
+		'items'        => $consultationCostFAQ,
+		'cta_heading'  => 'Direct Connect With Us',
+		'cta_text'     => 'Can’t find the answer you’re looking for? Please chat to our friendly team.',
+		'cta_btn_text' => 'Contact Us',
+		'cta_btn_href' => 'contact.php',
+	)
+);
+?>
 <section class="content-width content-gapping">
-  <h2 class="secondary-header text-center">How Do Lawyers Charge in Australia?</h2>
-  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <h2 class="secondary-header text-center"><?= e( $dm_faq['heading'] ) ?></h2>
+  <p class="body-text text-center section-lead--tight"><?= e( $dm_faq['lead'] ) ?></p>
   <div class="faq-list" data-faq-list>
-    <?php foreach ( $consultationCostFAQ as $faq ) : ?>
+    <?php foreach ( $dm_faq['items'] as $faq ) : ?>
       <div class="faq-item">
         <div class="faq-item__head">
           <h3><?= e( $faq['question'] ) ?></h3>
@@ -181,9 +198,11 @@ $dm_ac = dm_legal_ac_args(
       <img src="<?= url( 'assets/images/avatar2.png' ) ?>" alt="">
       <img src="<?= url( 'assets/images/avatar3.png' ) ?>" alt="">
     </div>
-    <h3>Direct Connect With Us</h3>
-    <p>Can&rsquo;t find the answer you&rsquo;re looking for? Please chat to our friendly team.</p>
-    <a class="btn btn-primary" href="<?= url( 'contact.php' ) ?>">Contact Us</a>
+    <h3><?= e( $dm_faq['cta_heading'] ) ?></h3>
+    <p><?= e( $dm_faq['cta_text'] ) ?></p>
+    <?php if ( ! empty( $dm_faq['cta_btn_text'] ) ) : ?>
+      <a class="btn btn-primary" href="<?= url( $dm_faq['cta_btn_href'] ) ?>"><?= e( $dm_faq['cta_btn_text'] ) ?></a>
+    <?php endif; ?>
   </div>
 </section>
 

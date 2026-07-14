@@ -71,6 +71,15 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'normal',
 			'high'
 		);
+
+		add_meta_box(
+			'dm_legal_faq',
+			__( 'FAQ Section', 'dm-legal' ),
+			'dm_legal_render_faq_metabox',
+			'page',
+			'normal',
+			'high'
+		);
 	}
 }
 add_action( 'add_meta_boxes', 'dm_legal_add_hero_metabox', 10, 2 );
@@ -856,6 +865,259 @@ function dm_legal_ac_args( array $defaults = array(), $post_id = 0 ) {
 	$options = get_post_meta( $post_id, '_dm_ac_options', true );
 	if ( is_array( $options ) && ! empty( $options ) ) {
 		$args['options'] = $options;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * FAQ SECTION (Fixed Prices page)
+ * ================================================================== */
+
+/**
+ * Render the FAQ metabox: heading, lead, repeatable Q&A, and the CTA block.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_faq_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_faq', 'dm_legal_faq_nonce' );
+
+	$heading  = get_post_meta( $post->ID, '_dm_faq_heading', true );
+	$lead     = get_post_meta( $post->ID, '_dm_faq_lead', true );
+	$items    = get_post_meta( $post->ID, '_dm_faq_items', true );
+	$items    = is_array( $items ) ? $items : array();
+	$cta_head = get_post_meta( $post->ID, '_dm_faq_cta_heading', true );
+	$cta_text = get_post_meta( $post->ID, '_dm_faq_cta_text', true );
+	$cta_btn  = get_post_meta( $post->ID, '_dm_faq_cta_btn_text', true );
+	$cta_href = get_post_meta( $post->ID, '_dm_faq_cta_btn_href', true );
+	?>
+	<style>
+		.dm-faq-field { margin-bottom:14px; }
+		.dm-faq-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-faq-field input[type=text], .dm-faq-field textarea { width:100%; max-width:760px; }
+		.dm-faq-item { border:1px solid #dcdcde; border-radius:4px; padding:12px 34px 12px 12px; margin-bottom:10px; background:#fff; position:relative; }
+		.dm-faq-item .dm-faq-row { display:grid; grid-template-columns:90px 1fr; gap:10px 14px; align-items:start; }
+		.dm-faq-item label { font-weight:600; padding-top:6px; }
+		.dm-faq-item input[type=text], .dm-faq-item textarea { width:100%; }
+		.dm-faq-remove { position:absolute; top:8px; right:8px; }
+		.dm-faq-cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:760px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave a field blank to keep the template default. Questions replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-faq-field">
+		<label for="dm_faq_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_faq_heading" name="_dm_faq_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="How Do Lawyers Charge in Australia?">
+	</div>
+
+	<div class="dm-faq-field">
+		<label for="dm_faq_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_faq_lead" name="_dm_faq_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Questions', 'dm-legal' ); ?></h4>
+	<div id="dm-faq-items">
+		<?php foreach ( $items as $i => $item ) : ?>
+			<?php
+			dm_legal_render_faq_item_row(
+				(int) $i,
+				isset( $item['question'] ) ? $item['question'] : '',
+				isset( $item['answer'] ) ? $item['answer'] : ''
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+
+	<p>
+		<button type="button" class="button button-secondary" id="dm-faq-add"><?php esc_html_e( '+ Add Question', 'dm-legal' ); ?></button>
+	</p>
+
+	<h4><?php esc_html_e( 'Call-to-Action Box', 'dm-legal' ); ?></h4>
+	<div class="dm-faq-field">
+		<label for="dm_faq_cta_heading"><?php esc_html_e( 'CTA Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_faq_cta_heading" name="_dm_faq_cta_heading" value="<?php echo esc_attr( $cta_head ); ?>" placeholder="Direct Connect With Us">
+	</div>
+	<div class="dm-faq-field">
+		<label for="dm_faq_cta_text"><?php esc_html_e( 'CTA Text', 'dm-legal' ); ?></label>
+		<textarea id="dm_faq_cta_text" name="_dm_faq_cta_text" rows="2"><?php echo esc_textarea( $cta_text ); ?></textarea>
+	</div>
+	<div class="dm-faq-cta-grid">
+		<input type="text" name="_dm_faq_cta_btn_text" value="<?php echo esc_attr( $cta_btn ); ?>" placeholder="<?php esc_attr_e( 'Button label, e.g. Contact Us', 'dm-legal' ); ?>">
+		<input type="text" name="_dm_faq_cta_btn_href" value="<?php echo esc_attr( $cta_href ); ?>" placeholder="<?php esc_attr_e( 'Link, e.g. contact.php', 'dm-legal' ); ?>">
+	</div>
+	<p class="description"><?php esc_html_e( 'Clear the label to hide the CTA button.', 'dm-legal' ); ?></p>
+
+	<script type="text/html" id="tmpl-dm-faq-item">
+		<?php dm_legal_render_faq_item_row( '__i__', '', '' ); ?>
+	</script>
+
+	<script>
+	(function ($) {
+		var $wrap = $('#dm-faq-items');
+
+		function nextIndex() {
+			var max = -1;
+			$wrap.find('.dm-faq-item').each(function () {
+				var i = parseInt($(this).data('index'), 10);
+				if (!isNaN(i) && i > max) { max = i; }
+			});
+			return max + 1;
+		}
+
+		$('#dm-faq-add').on('click', function (e) {
+			e.preventDefault();
+			$wrap.append($('#tmpl-dm-faq-item').html().replace(/__i__/g, nextIndex()));
+		});
+
+		$wrap.on('click', '.dm-faq-remove', function (e) {
+			e.preventDefault();
+			$(this).closest('.dm-faq-item').remove();
+		});
+	})(jQuery);
+	</script>
+	<?php
+}
+
+/**
+ * Render a single repeatable FAQ row.
+ *
+ * @param int|string $index    Row index (or the __i__ placeholder).
+ * @param string     $question Question text.
+ * @param string     $answer   Answer text.
+ * @return void
+ */
+function dm_legal_render_faq_item_row( $index, $question, $answer ) {
+	$name = '_dm_faq_items[' . $index . ']';
+	?>
+	<div class="dm-faq-item" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-faq-remove" aria-label="<?php esc_attr_e( 'Remove question', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-faq-row">
+
+			<label><?php esc_html_e( 'Question', 'dm-legal' ); ?></label>
+			<div>
+				<input type="text" name="<?php echo esc_attr( $name ); ?>[question]" value="<?php echo esc_attr( $question ); ?>">
+			</div>
+
+			<label><?php esc_html_e( 'Answer', 'dm-legal' ); ?></label>
+			<div>
+				<textarea name="<?php echo esc_attr( $name ); ?>[answer]" rows="3"><?php echo esc_textarea( $answer ); ?></textarea>
+			</div>
+
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the FAQ metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_faq_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_faq_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_faq_nonce'] ) ), 'dm_legal_save_faq' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_faq_heading'      => 'sanitize_text_field',
+		'_dm_faq_lead'         => 'sanitize_textarea_field',
+		'_dm_faq_cta_heading'  => 'sanitize_text_field',
+		'_dm_faq_cta_text'     => 'sanitize_textarea_field',
+		'_dm_faq_cta_btn_text' => 'sanitize_text_field',
+		'_dm_faq_cta_btn_href' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	// Questions repeater: keep only rows that have a question.
+	$raw   = isset( $_POST['_dm_faq_items'] ) ? wp_unslash( $_POST['_dm_faq_items'] ) : array();
+	$items = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+
+			$question = isset( $row['question'] ) ? sanitize_text_field( $row['question'] ) : '';
+			$answer   = isset( $row['answer'] ) ? sanitize_textarea_field( $row['answer'] ) : '';
+
+			if ( '' === $question ) {
+				continue;
+			}
+
+			$items[] = array(
+				'question' => $question,
+				'answer'   => $answer,
+			);
+		}
+	}
+
+	if ( empty( $items ) ) {
+		delete_post_meta( $post_id, '_dm_faq_items' );
+	} else {
+		update_post_meta( $post_id, '_dm_faq_items', $items );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_faq_metabox' );
+
+/**
+ * Merge saved FAQ meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, items (question/answer),
+ *                        cta_heading, cta_text, cta_btn_text, cta_btn_href.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_faq_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$map = array(
+		'heading'      => '_dm_faq_heading',
+		'lead'         => '_dm_faq_lead',
+		'cta_heading'  => '_dm_faq_cta_heading',
+		'cta_text'     => '_dm_faq_cta_text',
+		'cta_btn_text' => '_dm_faq_cta_btn_text',
+		'cta_btn_href' => '_dm_faq_cta_btn_href',
+	);
+
+	foreach ( $map as $arg_key => $meta_key ) {
+		$value = trim( (string) get_post_meta( $post_id, $meta_key, true ) );
+		if ( '' !== $value ) {
+			$args[ $arg_key ] = $value;
+		}
+	}
+
+	$items = get_post_meta( $post_id, '_dm_faq_items', true );
+	if ( is_array( $items ) && ! empty( $items ) ) {
+		$args['items'] = $items;
 	}
 
 	return $args;
