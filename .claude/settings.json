@@ -8,7 +8,9 @@
       "Bash(grep -oE '<b>\\(Warning|Notice|Fatal error|Deprecated\\)</b>:.{0,140}' h.html)",
       "Bash(/c/laragon/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -l c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/legacy-helpers.php)",
       "Bash(cp c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/data.php /tmp/data.bak)",
-      "Bash(sed -i 552,615d c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/data.php)"
+      "Bash(sed -i 552,615d c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/data.php)",
+      "Bash(curl -s \"http://dm-legal.test/contact/\")",
+      "Bash(grep -oE '<b>\\(Fatal error|Warning|Parse error\\)</b>.{0,300}')"
     ]
   }
 }

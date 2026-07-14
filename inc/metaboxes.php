@@ -92,6 +92,26 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'high'
 		);
 	}
+
+	if ( $post instanceof WP_Post && 'contact' === $post->post_name ) {
+		add_meta_box(
+			'dm_legal_contact_sidebar',
+			__( 'Expert Sidebar & Office Card', 'dm-legal' ),
+			'dm_legal_render_csidebar_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		add_meta_box(
+			'dm_legal_value_heading',
+			__( 'Value Heading Section', 'dm-legal' ),
+			'dm_legal_render_vheading_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+	}
 }
 add_action( 'add_meta_boxes', 'dm_legal_add_hero_metabox', 10, 2 );
 
@@ -1433,6 +1453,331 @@ function dm_legal_faqcats_args( array $defaults = array(), $post_id = 0 ) {
 	$cats = get_post_meta( $post_id, '_dm_faqcat_items', true );
 	if ( is_array( $cats ) && ! empty( $cats ) ) {
 		$args['categories'] = $cats;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * EXPERT SIDEBAR & OFFICE CARD (Contact page)
+ *
+ * The office card's name/address/phone/email/hours/map all come from
+ * DM Legal → Global Settings, so only the page-specific bits are here.
+ * ================================================================== */
+
+/**
+ * Render the Expert Sidebar & Office Card metabox.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_csidebar_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_csidebar', 'dm_legal_csidebar_nonce' );
+
+	$heading    = get_post_meta( $post->ID, '_dm_cs_heading', true );
+	$btn_text   = get_post_meta( $post->ID, '_dm_cs_btn_text', true );
+	$btn_href   = get_post_meta( $post->ID, '_dm_cs_btn_href', true );
+	$directions = get_post_meta( $post->ID, '_dm_cs_directions_text', true );
+	$experts    = get_post_meta( $post->ID, '_dm_cs_experts', true );
+	$experts    = is_array( $experts ) ? $experts : array();
+	?>
+	<style>
+		.dm-cs-field { margin-bottom:14px; }
+		.dm-cs-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-cs-field input[type=text] { width:100%; max-width:760px; }
+		.dm-cs-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:760px; }
+		.dm-cs-expert { display:inline-flex; flex-direction:column; align-items:center; gap:6px; border:1px solid #dcdcde; border-radius:4px; padding:8px; margin:0 8px 8px 0; background:#fff; position:relative; width:120px; vertical-align:top; }
+		.dm-cs-expert img { width:56px; height:56px; object-fit:cover; border-radius:50%; }
+		.dm-cs-expert input { width:100%; font-size:11px; }
+		.dm-cs-expert .dm-cs-remove { position:absolute; top:2px; right:6px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'The office card\'s address, phone, email, hours and map come from DM Legal → Global Settings. Only the page-specific parts are editable here. Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-cs-field">
+		<label for="dm_cs_heading"><?php esc_html_e( 'Sidebar Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_cs_heading" name="_dm_cs_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Talk to an Expert">
+	</div>
+
+	<h4><?php esc_html_e( 'Expert Photos', 'dm-legal' ); ?></h4>
+	<div id="dm-cs-experts">
+		<?php foreach ( $experts as $i => $img ) : ?>
+			<?php dm_legal_render_cs_expert_row( (int) $i, $img ); ?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary" id="dm-cs-add"><?php esc_html_e( '+ Add Expert Photo', 'dm-legal' ); ?></button>
+	</p>
+
+	<h4><?php esc_html_e( 'Sidebar Button', 'dm-legal' ); ?></h4>
+	<div class="dm-cs-grid">
+		<input type="text" name="_dm_cs_btn_text" value="<?php echo esc_attr( $btn_text ); ?>" placeholder="<?php esc_attr_e( 'Button label, e.g. Book Now', 'dm-legal' ); ?>">
+		<input type="text" name="_dm_cs_btn_href" value="<?php echo esc_attr( $btn_href ); ?>" placeholder="<?php esc_attr_e( 'Link, e.g. book-your-lawyer.php', 'dm-legal' ); ?>">
+	</div>
+	<p class="description"><?php esc_html_e( 'The phone button beneath it uses the number from Global Settings.', 'dm-legal' ); ?></p>
+
+	<div class="dm-cs-field" style="margin-top:14px;">
+		<label for="dm_cs_directions"><?php esc_html_e( 'Office Card — Directions Button Label', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_cs_directions" name="_dm_cs_directions_text" value="<?php echo esc_attr( $directions ); ?>" placeholder="Get Directions">
+	</div>
+
+	<script type="text/html" id="tmpl-dm-cs-expert">
+		<?php dm_legal_render_cs_expert_row( '__i__', '' ); ?>
+	</script>
+
+	<script>
+	(function ($) {
+		var $wrap = $('#dm-cs-experts');
+
+		function nextIndex() {
+			var max = -1;
+			$wrap.find('.dm-cs-expert').each(function () {
+				var i = parseInt($(this).data('index'), 10);
+				if (!isNaN(i) && i > max) { max = i; }
+			});
+			return max + 1;
+		}
+
+		$('#dm-cs-add').on('click', function (e) {
+			e.preventDefault();
+			$wrap.append($('#tmpl-dm-cs-expert').html().replace(/__i__/g, nextIndex()));
+		});
+
+		$wrap.on('click', '.dm-cs-remove', function (e) {
+			e.preventDefault();
+			$(this).closest('.dm-cs-expert').remove();
+		});
+
+		$wrap.on('click', '.dm-cs-select', function (e) {
+			e.preventDefault();
+			var $row = $(this).closest('.dm-cs-expert');
+			var frame = wp.media({
+				title: '<?php echo esc_js( __( 'Select Expert Photo', 'dm-legal' ) ); ?>',
+				button: { text: '<?php echo esc_js( __( 'Use this photo', 'dm-legal' ) ); ?>' },
+				library: { type: 'image' },
+				multiple: false
+			});
+			frame.on('select', function () {
+				var url = frame.state().get('selection').first().toJSON().url;
+				$row.find('.dm-cs-image').val(url);
+				$row.find('img').attr('src', url).show();
+			});
+			frame.open();
+		});
+	})(jQuery);
+	</script>
+	<?php
+}
+
+/**
+ * Render one expert-photo row.
+ *
+ * @param int|string $index Row index (or __i__ placeholder).
+ * @param string     $img   Image URL.
+ * @return void
+ */
+function dm_legal_render_cs_expert_row( $index, $img ) {
+	?>
+	<div class="dm-cs-expert" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-cs-remove" aria-label="<?php esc_attr_e( 'Remove photo', 'dm-legal' ); ?>">&times;</button>
+		<img src="<?php echo esc_url( $img ); ?>" <?php echo $img ? '' : 'style="display:none;"'; ?> alt="">
+		<input type="url" class="dm-cs-image" name="_dm_cs_experts[<?php echo esc_attr( $index ); ?>]" value="<?php echo esc_attr( $img ); ?>" placeholder="<?php esc_attr_e( 'Image URL', 'dm-legal' ); ?>">
+		<button type="button" class="button button-small dm-cs-select"><?php esc_html_e( 'Select', 'dm-legal' ); ?></button>
+	</div>
+	<?php
+}
+
+/**
+ * Save the Expert Sidebar & Office Card metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_csidebar_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_csidebar_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_csidebar_nonce'] ) ), 'dm_legal_save_csidebar' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_cs_heading'         => 'sanitize_text_field',
+		'_dm_cs_btn_text'        => 'sanitize_text_field',
+		'_dm_cs_btn_href'        => 'sanitize_text_field',
+		'_dm_cs_directions_text' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	// Expert photos: a flat list of URLs; drop empties.
+	$raw     = isset( $_POST['_dm_cs_experts'] ) ? wp_unslash( $_POST['_dm_cs_experts'] ) : array();
+	$experts = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $img ) {
+			$img = esc_url_raw( trim( (string) $img ) );
+			if ( '' !== $img ) {
+				$experts[] = $img;
+			}
+		}
+	}
+
+	if ( empty( $experts ) ) {
+		delete_post_meta( $post_id, '_dm_cs_experts' );
+	} else {
+		update_post_meta( $post_id, '_dm_cs_experts', $experts );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_csidebar_metabox' );
+
+/**
+ * Merge saved Expert Sidebar meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, experts, btn_text, btn_href, directions_text.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_csidebar_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$map = array(
+		'heading'         => '_dm_cs_heading',
+		'btn_text'        => '_dm_cs_btn_text',
+		'btn_href'        => '_dm_cs_btn_href',
+		'directions_text' => '_dm_cs_directions_text',
+	);
+
+	foreach ( $map as $arg_key => $meta_key ) {
+		$value = trim( (string) get_post_meta( $post_id, $meta_key, true ) );
+		if ( '' !== $value ) {
+			$args[ $arg_key ] = $value;
+		}
+	}
+
+	$experts = get_post_meta( $post_id, '_dm_cs_experts', true );
+	if ( is_array( $experts ) && ! empty( $experts ) ) {
+		$args['experts'] = $experts;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * VALUE HEADING SECTION (Contact page)
+ * ================================================================== */
+
+/**
+ * Render the Value Heading metabox.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_vheading_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_vheading', 'dm_legal_vheading_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_vh_heading', true );
+	$lead    = get_post_meta( $post->ID, '_dm_vh_lead', true );
+	?>
+	<p class="description">
+		<?php esc_html_e( 'Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<p>
+		<label for="dm_vh_heading" style="display:block;font-weight:600;margin-bottom:4px;"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_vh_heading" name="_dm_vh_heading" value="<?php echo esc_attr( $heading ); ?>" style="width:100%;max-width:760px;" placeholder="Which One Delivers the Best Value for You?">
+	</p>
+
+	<p>
+		<label for="dm_vh_lead" style="display:block;font-weight:600;margin-bottom:4px;"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_vh_lead" name="_dm_vh_lead" rows="3" style="width:100%;max-width:760px;"><?php echo esc_textarea( $lead ); ?></textarea>
+	</p>
+	<?php
+}
+
+/**
+ * Save the Value Heading metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_vheading_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_vheading_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_vheading_nonce'] ) ), 'dm_legal_save_vheading' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_vh_heading' => 'sanitize_text_field',
+		'_dm_vh_lead'    => 'sanitize_textarea_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_vheading_metabox' );
+
+/**
+ * Merge saved Value Heading meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_vheading_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_vh_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$lead = trim( (string) get_post_meta( $post_id, '_dm_vh_lead', true ) );
+	if ( '' !== $lead ) {
+		$args['lead'] = $lead;
 	}
 
 	return $args;
