@@ -79,3 +79,11 @@ if ( is_readable( $dm_legal_data_file ) ) {
 	require_once $dm_legal_data_file;
 }
 unset( $dm_legal_data_file );
+
+
+
+add_filter('use_block_editor_for_post', '__return_false', 10);
+// use for classic editor
+
+
+

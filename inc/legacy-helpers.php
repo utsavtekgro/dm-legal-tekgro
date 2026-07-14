@@ -171,19 +171,6 @@ if ( ! function_exists( 'find_practice_area_by_slug' ) ) {
 	}
 }
 
-if ( ! function_exists( 'find_case_study_by_slug' ) ) {
-	/** Find a case study by slug from $caseStudies. */
-	function find_case_study_by_slug( $slug ) {
-		global $caseStudies;
-		foreach ( (array) $caseStudies as $cs ) {
-			if ( slugify( $cs['title'] ) === $slug ) {
-				return $cs;
-			}
-		}
-		return null;
-	}
-}
-
 if ( ! function_exists( 'render_breadcrumb' ) ) {
 	/**
 	 * Render a breadcrumb trail. $items is a list of ['label','href'].

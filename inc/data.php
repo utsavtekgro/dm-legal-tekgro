@@ -10,7 +10,6 @@
 // ---------------------------------------------------------------------
 $navLinks = [
     ['label' => 'FIXED PRICES', 'href' => '/fixed-prices.php'],
-    ['label' => 'CASE STUDIES', 'href' => '/case-studies.php'],
     ['label' => 'PRACTICE AREA', 'href' => '/practice-area.php'],
     ['label' => 'NEWS & BLOG', 'href' => '/blogs.php'],
     ['label' => 'Q&A', 'href' => '/faqs.php'],
@@ -547,70 +546,6 @@ $officeInfo = [
     'mapsUrl' => SITE_MAPS_URL,
     'instagram' => SITE_INSTAGRAM_URL,
     'facebook' => SITE_FACEBOOK_URL,
-];
-
-// ---------------------------------------------------------------------
-// Case studies (src/data/overall.ts caseStudies + caseStudiesInnerData)
-// ---------------------------------------------------------------------
-$caseStudies = [
-    [
-        'id' => 1,
-        'issue' => 'Security',
-        'practiceArea' => 'Family Law',
-        'tags' => ['Security', 'Threats'],
-        'title' => 'Activating end-to-end controls and collaboration across complex family law matters',
-        'excerpt' => 'Learn about the latest changes affecting work, study, and permanent residency applications to help plan your next steps.',
-        'description' => 'Our client came to us facing a complex separation involving shared business assets and parenting arrangements. Working closely with the family, our solicitors built a mediation-first strategy that protected everyone’s interests while avoiding a lengthy, costly court battle.',
-        'image' => '/assets/images/case1.png',
-        'client' => 'Confidential family law client',
-        'industry' => 'Private client',
-        'featuring' => 'Mediation, Property Settlement',
-        'highlights' => [
-            ['label' => 'CLIENT', 'value' => 'Confidential family law client', 'image' => '/assets/icons/client.svg'],
-            ['label' => 'INDUSTRY', 'value' => 'Private client', 'image' => '/assets/icons/industry.svg'],
-            ['label' => 'FEATURING', 'value' => 'Mediation, Property Settlement', 'image' => '/assets/icons/featuring.svg'],
-        ],
-        'stats' => [
-            ['value' => '33%', 'description' => 'faster resolution achieved through structured mediation and clear documentation'],
-            ['value' => '36%', 'description' => 'reduction in legal costs by resolving the matter outside of court'],
-            ['value' => '27%', 'description' => 'improvement in co-parenting communication following the settlement'],
-        ],
-        'sections' => [
-            ['heading' => 'What sparked the need for change?', 'body' => 'Our client came to us facing a complex separation involving shared business assets and parenting arrangements. Existing informal arrangements were breaking down, and a clear legal pathway was needed to protect both the client and the children involved.'],
-            ['heading' => 'What approach did our team take?', 'body' => 'Our family law team mapped out a mediation-first strategy, engaging both parties early to identify shared goals before resorting to court proceedings. We coordinated valuations, parenting plans, and financial disclosure in parallel to keep the matter moving quickly.'],
-            ['heading' => 'Where did expertise make the difference?', 'body' => 'By anticipating points of disagreement and preparing detailed settlement options in advance, we were able to keep negotiations constructive and avoid unnecessary delays or escalation to litigation.'],
-            ['heading' => 'What was the real-world impact?', 'body' => 'The matter was resolved through consent orders within a fraction of the time a contested court case would have taken, preserving the client’s finances and minimising stress for the whole family.'],
-        ],
-    ],
-    [
-        'id' => 2,
-        'issue' => 'Immigration',
-        'practiceArea' => 'Business Law',
-        'tags' => ['Immigration', 'Policy'],
-        'title' => 'Hardwiring trust and reducing risk through a complex business immigration matter',
-        'excerpt' => 'Learn about the latest changes affecting work, study, and permanent residency applications to help plan your next steps.',
-        'description' => 'A growing trade business needed to sponsor several skilled overseas workers but had no internal experience navigating sponsorship obligations or visa compliance requirements. Our immigration team built the framework to get it right the first time.',
-        'image' => '/assets/images/case2.png',
-        'client' => 'Mid-size import/export business',
-        'industry' => 'Trade & logistics',
-        'featuring' => 'Business sponsorship, Skilled visas',
-        'highlights' => [
-            ['label' => 'CLIENT', 'value' => 'Mid-size import/export business', 'image' => '/assets/icons/client.svg'],
-            ['label' => 'INDUSTRY', 'value' => 'Trade & logistics', 'image' => '/assets/icons/industry.svg'],
-            ['label' => 'FEATURING', 'value' => 'Business sponsorship, Skilled visas', 'image' => '/assets/icons/featuring.svg'],
-        ],
-        'stats' => [
-            ['value' => '33%', 'description' => 'faster visa processing achieved through complete, well-prepared documentation'],
-            ['value' => '36%', 'description' => 'of staff time freed up by managing sponsorship compliance on the client’s behalf'],
-            ['value' => '27%', 'description' => 'reduction in compliance risk following our review of sponsorship obligations'],
-        ],
-        'sections' => [
-            ['heading' => 'What sparked the need for change?', 'body' => 'A growing trade business needed to sponsor several skilled overseas workers but had no internal experience navigating sponsorship obligations or visa compliance requirements.'],
-            ['heading' => 'What solution did our team provide?', 'body' => 'We guided the business through becoming an approved sponsor, prepared nomination and visa applications for each role, and built a compliance framework so future applications could be handled with confidence.'],
-            ['heading' => 'Where did expertise make the difference?', 'body' => 'Our immigration team identified and resolved several documentation gaps before lodgement, avoiding the delays and requests for further information that commonly affect first-time sponsors.'],
-            ['heading' => 'What was the real-world impact?', 'body' => 'All nominated employees received visa approval without requests for additional evidence, and the business now has an internal process for managing future sponsorship needs.'],
-        ],
-    ],
 ];
 
 // ---------------------------------------------------------------------

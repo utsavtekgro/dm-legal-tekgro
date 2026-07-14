@@ -75,7 +75,6 @@ function dm_legal_enqueue_assets() {
 	// Per-page scripts, mirroring the legacy pages' $pageScripts.
 	$page_scripts = array(
 		'blogs'               => 'blog-filter.js',
-		'case-studies'        => 'case-filter.js',
 		'book-your-lawyer'    => 'booking-form.js',
 		'practice-area-inner' => 'inner-dropdown.js',
 	);

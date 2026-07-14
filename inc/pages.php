@@ -23,8 +23,6 @@ function dm_legal_page_manifest() {
 	return array(
 		'home'                 => 'Home',
 		'fixed-prices'         => 'Fixed Prices',
-		'case-studies'         => 'Case Studies',
-		'case-study-detail'    => 'Case Study',
 		'practice-area'        => 'Practice Area',
 		'practice-area-inner'  => 'Practice Area Service',
 		'blogs'                => 'News & Blog',
