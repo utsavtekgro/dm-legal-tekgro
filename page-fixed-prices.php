@@ -10,14 +10,32 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$heroTitle      = 'Protect Your Financial Future at an Affordable, Transparent Cost with Our Fixed Fee';
-$heroSubtitle   = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
-$heroFeatures   = array( 'Fixed Fees for common legal services', 'Hourly Rates where appropriate', 'Manage Legal Costs Effectively', 'Transparent and upfront pricing' );
-$heroPrimaryBtn = array( 'text' => 'Book free consultation', 'href' => 'book-your-lawyer.php' );
-$heroSecondaryBtn = array( 'text' => 'Explore more', 'href' => 'index.php' );
-$heroRightSide  = 'image';
-$heroImage      = '/assets/images/fixed-fees-img.png';
-$heroBreadcrumb = array( array( 'label' => 'Fixed Prices' ) );
+/*
+ * Hero content is editable per-page via the "Hero Section" metabox
+ * (Pages → Fixed Prices). Anything left blank there falls back to the
+ * defaults below, so the page renders unchanged until it's overridden.
+ */
+$dm_hero = dm_legal_hero_args(
+	array(
+		'heroTitle'        => 'Protect Your Financial Future at an Affordable, Transparent Cost with Our Fixed Fee',
+		'heroSubtitle'     => 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.',
+		'heroFeatures'     => array( 'Fixed Fees for common legal services', 'Hourly Rates where appropriate', 'Manage Legal Costs Effectively', 'Transparent and upfront pricing' ),
+		'heroPrimaryBtn'   => array( 'text' => 'Book free consultation', 'href' => 'book-your-lawyer.php' ),
+		'heroSecondaryBtn' => array( 'text' => 'Explore more', 'href' => 'index.php' ),
+		'heroRightSide'    => 'image',
+		'heroImage'        => '/assets/images/fixed-fees-img.png',
+	)
+);
+
+$heroTitle        = $dm_hero['heroTitle'];
+$heroSubtitle     = $dm_hero['heroSubtitle'];
+$heroFeatures     = $dm_hero['heroFeatures'];
+$heroPrimaryBtn   = $dm_hero['heroPrimaryBtn'];
+$heroSecondaryBtn = $dm_hero['heroSecondaryBtn'];
+$heroRightSide    = $dm_hero['heroRightSide'];
+$heroImage        = $dm_hero['heroImage'];
+$heroMinimal      = $dm_hero['heroMinimal'];
+$heroBreadcrumb   = array( array( 'label' => 'Fixed Prices' ) );
 
 include DM_LEGAL_DIR . '/inc/parts/hero.php';
 ?>

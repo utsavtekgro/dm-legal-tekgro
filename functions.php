@@ -58,6 +58,7 @@ $dm_legal_modules = array(
 	'customizer',         // Theme Customizer settings with sanitization.
 	'global-settings',    // "DM Legal → Global Settings" admin page (phone, email, socials…).
 	'legacy-helpers',     // Firm constants + WP-aware url()/e() + render helpers.
+	'metaboxes',          // Per-page Hero Section metabox + dm_legal_hero_args().
 	'pages',              // Auto-provision the Pages backing the legacy templates.
 );
 
