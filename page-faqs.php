@@ -23,22 +23,36 @@ include DM_LEGAL_DIR . '/inc/parts/hero.php';
 ?>
 
 <!-- ============ FAQ CATEGORIES ============ -->
+<?php
+/*
+ * Editable via the "FAQ Categories Section" metabox (Pages → FAQs).
+ * Each category renders as a tab. Blank fields fall back to these defaults.
+ */
+$dm_fc = dm_legal_faqcats_args(
+	array(
+		'heading'    => 'Frequently Asked Questions',
+		'lead'       => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+		'categories' => $faqCategories,
+	)
+);
+$dm_fc_cats = $dm_fc['categories'];
+?>
 <section class="content-width content-gapping">
   <div class="section-heading">
-    <h2 class="secondary-header">Frequently Asked Questions</h2>
-    <p class="body-text">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
+    <h2 class="secondary-header"><?= e( $dm_fc['heading'] ) ?></h2>
+    <p class="body-text"><?= e( $dm_fc['lead'] ) ?></p>
   </div>
 
   <div class="tabs" data-tabs="faq-categories">
-    <?php foreach ( $faqCategories as $i => $cat ) : ?>
+    <?php foreach ( $dm_fc_cats as $i => $cat ) : ?>
       <button type="button" data-tab-btn="cat-<?= $i ?>" class="<?= $i === 0 ? 'is-active' : '' ?>"><?= e( $cat['title'] ) ?></button>
     <?php endforeach; ?>
   </div>
 
-  <?php foreach ( $faqCategories as $i => $cat ) : ?>
+  <?php foreach ( $dm_fc_cats as $i => $cat ) : ?>
     <div data-tab-panel="cat-<?= $i ?>" data-tabs-target="faq-categories" class="<?= $i === 0 ? '' : 'hidden' ?>">
       <div class="faq-list" data-faq-list>
-        <?php foreach ( $cat['faqs'] as $faq ) : ?>
+        <?php foreach ( ( $cat['faqs'] ?? array() ) as $faq ) : ?>
           <div class="faq-item">
             <div class="faq-item__head">
               <h3><?= e( $faq['question'] ) ?></h3>

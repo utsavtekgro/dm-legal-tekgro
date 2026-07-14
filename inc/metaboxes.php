@@ -81,6 +81,17 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'high'
 		);
 	}
+
+	if ( $post instanceof WP_Post && 'faqs' === $post->post_name ) {
+		add_meta_box(
+			'dm_legal_faq_categories',
+			__( 'FAQ Categories Section', 'dm-legal' ),
+			'dm_legal_render_faqcats_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+	}
 }
 add_action( 'add_meta_boxes', 'dm_legal_add_hero_metabox', 10, 2 );
 
@@ -1118,6 +1129,310 @@ function dm_legal_faq_args( array $defaults = array(), $post_id = 0 ) {
 	$items = get_post_meta( $post_id, '_dm_faq_items', true );
 	if ( is_array( $items ) && ! empty( $items ) ) {
 		$args['items'] = $items;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * FAQ CATEGORIES SECTION (FAQs page) — nested repeater:
+ * categories -> each with its own list of questions.
+ * ================================================================== */
+
+/**
+ * Render the FAQ Categories metabox.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_faqcats_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_faqcats', 'dm_legal_faqcats_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_faqcat_heading', true );
+	$lead    = get_post_meta( $post->ID, '_dm_faqcat_lead', true );
+	$cats    = get_post_meta( $post->ID, '_dm_faqcat_items', true );
+	$cats    = is_array( $cats ) ? $cats : array();
+	?>
+	<style>
+		.dm-fc-field { margin-bottom:14px; }
+		.dm-fc-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-fc-field input[type=text], .dm-fc-field textarea { width:100%; max-width:760px; }
+		.dm-fc-cat { border:1px solid #c3c4c7; border-left:4px solid #2271b1; border-radius:4px; padding:12px 34px 12px 12px; margin-bottom:14px; background:#f6f7f7; position:relative; }
+		.dm-fc-cat > .dm-fc-cat-title { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+		.dm-fc-cat > .dm-fc-cat-title label { font-weight:600; white-space:nowrap; }
+		.dm-fc-cat > .dm-fc-cat-title input { flex:1; max-width:480px; }
+		.dm-fc-q { border:1px solid #dcdcde; border-radius:4px; padding:10px 32px 10px 10px; margin-bottom:8px; background:#fff; position:relative; }
+		.dm-fc-q .dm-fc-q-row { display:grid; grid-template-columns:80px 1fr; gap:8px 12px; align-items:start; }
+		.dm-fc-q label { font-weight:600; padding-top:6px; }
+		.dm-fc-q input[type=text], .dm-fc-q textarea { width:100%; }
+		.dm-fc-remove { position:absolute; top:6px; right:8px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Each category becomes a tab. Leave heading/lead blank to keep the template default. Categories replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-fc-field">
+		<label for="dm_fc_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_fc_heading" name="_dm_faqcat_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Frequently Asked Questions">
+	</div>
+
+	<div class="dm-fc-field">
+		<label for="dm_fc_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_fc_lead" name="_dm_faqcat_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Categories (Tabs)', 'dm-legal' ); ?></h4>
+	<div id="dm-fc-cats">
+		<?php foreach ( $cats as $ci => $cat ) : ?>
+			<?php
+			dm_legal_render_faqcat_row(
+				(int) $ci,
+				isset( $cat['title'] ) ? $cat['title'] : '',
+				isset( $cat['faqs'] ) && is_array( $cat['faqs'] ) ? $cat['faqs'] : array()
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+
+	<p>
+		<button type="button" class="button button-primary" id="dm-fc-add-cat"><?php esc_html_e( '+ Add Category', 'dm-legal' ); ?></button>
+	</p>
+
+	<script type="text/html" id="tmpl-dm-fc-cat">
+		<?php dm_legal_render_faqcat_row( '__ci__', '', array() ); ?>
+	</script>
+	<script type="text/html" id="tmpl-dm-fc-q">
+		<?php dm_legal_render_faqcat_question_row( '__ci__', '__qi__', '', '' ); ?>
+	</script>
+
+	<script>
+	(function ($) {
+		var $cats = $('#dm-fc-cats');
+
+		function nextIndex($scope, selector) {
+			var max = -1;
+			$scope.find(selector).each(function () {
+				var i = parseInt($(this).data('index'), 10);
+				if (!isNaN(i) && i > max) { max = i; }
+			});
+			return max + 1;
+		}
+
+		// Add a whole category (tab).
+		$('#dm-fc-add-cat').on('click', function (e) {
+			e.preventDefault();
+			var ci = nextIndex($cats, '> .dm-fc-cat');
+			$cats.append($('#tmpl-dm-fc-cat').html().replace(/__ci__/g, ci));
+		});
+
+		// Add a question inside a specific category.
+		$cats.on('click', '.dm-fc-add-q', function (e) {
+			e.preventDefault();
+			var $cat = $(this).closest('.dm-fc-cat');
+			var ci = $cat.data('index');
+			var $list = $cat.find('.dm-fc-qs').first();
+			var qi = nextIndex($list, '> .dm-fc-q');
+			$list.append(
+				$('#tmpl-dm-fc-q').html().replace(/__ci__/g, ci).replace(/__qi__/g, qi)
+			);
+		});
+
+		// Remove a question, or a whole category.
+		$cats.on('click', '.dm-fc-remove-q', function (e) {
+			e.preventDefault();
+			$(this).closest('.dm-fc-q').remove();
+		});
+		$cats.on('click', '.dm-fc-remove-cat', function (e) {
+			e.preventDefault();
+			$(this).closest('.dm-fc-cat').remove();
+		});
+	})(jQuery);
+	</script>
+	<?php
+}
+
+/**
+ * Render one category block, including its nested question rows.
+ *
+ * @param int|string $ci    Category index (or __ci__ placeholder).
+ * @param string     $title Category title.
+ * @param array      $faqs  Questions in this category.
+ * @return void
+ */
+function dm_legal_render_faqcat_row( $ci, $title, array $faqs ) {
+	$name = '_dm_faqcat_items[' . $ci . ']';
+	?>
+	<div class="dm-fc-cat" data-index="<?php echo esc_attr( $ci ); ?>">
+		<button type="button" class="button-link dm-fc-remove dm-fc-remove-cat" aria-label="<?php esc_attr_e( 'Remove category', 'dm-legal' ); ?>">&times;</button>
+
+		<div class="dm-fc-cat-title">
+			<label><?php esc_html_e( 'Category', 'dm-legal' ); ?></label>
+			<input type="text" name="<?php echo esc_attr( $name ); ?>[title]" value="<?php echo esc_attr( $title ); ?>" placeholder="<?php esc_attr_e( 'e.g. General Information', 'dm-legal' ); ?>">
+		</div>
+
+		<div class="dm-fc-qs">
+			<?php foreach ( $faqs as $qi => $faq ) : ?>
+				<?php
+				dm_legal_render_faqcat_question_row(
+					$ci,
+					(int) $qi,
+					isset( $faq['question'] ) ? $faq['question'] : '',
+					isset( $faq['answer'] ) ? $faq['answer'] : ''
+				);
+				?>
+			<?php endforeach; ?>
+		</div>
+
+		<button type="button" class="button button-secondary dm-fc-add-q"><?php esc_html_e( '+ Add Question', 'dm-legal' ); ?></button>
+	</div>
+	<?php
+}
+
+/**
+ * Render one question row nested inside a category.
+ *
+ * @param int|string $ci       Category index.
+ * @param int|string $qi       Question index.
+ * @param string     $question Question text.
+ * @param string     $answer   Answer text.
+ * @return void
+ */
+function dm_legal_render_faqcat_question_row( $ci, $qi, $question, $answer ) {
+	$name = '_dm_faqcat_items[' . $ci . '][faqs][' . $qi . ']';
+	?>
+	<div class="dm-fc-q" data-index="<?php echo esc_attr( $qi ); ?>">
+		<button type="button" class="button-link dm-fc-remove dm-fc-remove-q" aria-label="<?php esc_attr_e( 'Remove question', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-fc-q-row">
+
+			<label><?php esc_html_e( 'Question', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[question]" value="<?php echo esc_attr( $question ); ?>"></div>
+
+			<label><?php esc_html_e( 'Answer', 'dm-legal' ); ?></label>
+			<div><textarea name="<?php echo esc_attr( $name ); ?>[answer]" rows="2"><?php echo esc_textarea( $answer ); ?></textarea></div>
+
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the FAQ Categories metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_faqcats_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_faqcats_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_faqcats_nonce'] ) ), 'dm_legal_save_faqcats' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_faqcat_heading' => 'sanitize_text_field',
+		'_dm_faqcat_lead'    => 'sanitize_textarea_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	// Nested repeater: categories, each with its own questions.
+	$raw  = isset( $_POST['_dm_faqcat_items'] ) ? wp_unslash( $_POST['_dm_faqcat_items'] ) : array();
+	$cats = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $cat ) {
+			if ( ! is_array( $cat ) ) {
+				continue;
+			}
+
+			$title = isset( $cat['title'] ) ? sanitize_text_field( $cat['title'] ) : '';
+
+			// A category with no title is meaningless as a tab — drop it.
+			if ( '' === $title ) {
+				continue;
+			}
+
+			$faqs = array();
+			if ( isset( $cat['faqs'] ) && is_array( $cat['faqs'] ) ) {
+				foreach ( $cat['faqs'] as $faq ) {
+					if ( ! is_array( $faq ) ) {
+						continue;
+					}
+
+					$question = isset( $faq['question'] ) ? sanitize_text_field( $faq['question'] ) : '';
+					$answer   = isset( $faq['answer'] ) ? sanitize_textarea_field( $faq['answer'] ) : '';
+
+					if ( '' === $question ) {
+						continue;
+					}
+
+					$faqs[] = array(
+						'question' => $question,
+						'answer'   => $answer,
+					);
+				}
+			}
+
+			$cats[] = array(
+				'title' => $title,
+				'faqs'  => $faqs,
+			);
+		}
+	}
+
+	if ( empty( $cats ) ) {
+		delete_post_meta( $post_id, '_dm_faqcat_items' );
+	} else {
+		update_post_meta( $post_id, '_dm_faqcat_items', $cats );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_faqcats_metabox' );
+
+/**
+ * Merge saved FAQ Categories meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, categories (title + faqs).
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_faqcats_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_faqcat_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$lead = trim( (string) get_post_meta( $post_id, '_dm_faqcat_lead', true ) );
+	if ( '' !== $lead ) {
+		$args['lead'] = $lead;
+	}
+
+	$cats = get_post_meta( $post_id, '_dm_faqcat_items', true );
+	if ( is_array( $cats ) && ! empty( $cats ) ) {
+		$args['categories'] = $cats;
 	}
 
 	return $args;
