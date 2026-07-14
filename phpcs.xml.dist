@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ruleset name="DM Legal">
+	<description>WordPress Coding Standards for the DM Legal theme.</description>
+
+	<file>.</file>
+
+	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<config name="minimum_supported_wp_version" value="6.4"/>
+	<config name="testVersion" value="8.1-"/>
+
+	<rule ref="WordPress">
+		<!-- Enforce a consistent text-domain across the theme. -->
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="dm-legal"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress-Docs"/>
+	<rule ref="WordPress-Extra"/>
+</ruleset>

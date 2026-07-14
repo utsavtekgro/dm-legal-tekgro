@@ -1,0 +1,23 @@
+/*
+Theme Name: DM Legal
+Theme URI: https://example.com/dm-legal
+Author: TekGro
+Author URI: https://tekgro.au
+Description: A lean, security-hardened, performance-first starter theme for law firms and professional services. Ships a full classic-theme architecture with block-editor (theme.json) support, WCAG 2.1 AA baseline, and a zero-external-request font strategy tuned for a 100/100 PageSpeed score.
+Version: 1.0.0
+Requires at least: 6.4
+Tested up to: 6.6
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: dm-legal
+Tags: professional, business, custom-colors, custom-logo, custom-menu, featured-images, block-styles, editor-style, translation-ready, accessibility-ready
+*/
+
+/*
+ * This file intentionally contains only the theme header.
+ * All presentational CSS lives in /assets/css/main.css and is
+ * enqueued with versioning + cache-busting via inc/enqueue.php.
+ * Keeping style.css header-only avoids shipping a second, unversioned
+ * render path and keeps the critical CSS strategy authoritative.
+ */
