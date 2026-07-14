@@ -41,21 +41,37 @@ include DM_LEGAL_DIR . '/inc/parts/hero.php';
 ?>
 
 <!-- ============ WHY FIXED FEES ============ -->
+<?php
+/*
+ * Heading, lead and steps are editable via the "Why Fixed Fees Section"
+ * metabox (Pages → Fixed Prices). Blank fields fall back to these defaults.
+ */
+$dm_wff = dm_legal_wff_args(
+	array(
+		'heading' => 'Why Choose Fixed Fees',
+		'lead'    => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+		'steps'   => $fixedFeesStep,
+	)
+);
+$dm_wff_steps = $dm_wff['steps'];
+?>
 <section class="content-width content-gapping text-center">
   <div data-aos="fade-up">
-    <h2 class="secondary-header">Why Choose Fixed Fees</h2>
-    <p class="body-text section-lead">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
+    <h2 class="secondary-header"><?= e( $dm_wff['heading'] ) ?></h2>
+    <p class="body-text section-lead"><?= e( $dm_wff['lead'] ) ?></p>
   </div>
   <div class="steps-grid">
     <div class="steps-grid__list">
-      <?php foreach ( $fixedFeesStep as $i => $step ) : ?>
+      <?php foreach ( $dm_wff_steps as $i => $step ) : ?>
         <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
           <div class="step-card">
-            <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+            <?php if ( ! empty( $step['image'] ) ) : ?>
+              <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+            <?php endif; ?>
             <h3><?= e( $step['title'] ) ?></h3>
             <p><?= e( $step['description'] ) ?></p>
           </div>
-          <?php if ( $i < count( $fixedFeesStep ) - 1 ) : ?>
+          <?php if ( $i < count( $dm_wff_steps ) - 1 ) : ?>
             <div class="step-arrow-down"><img src="<?= url( 'assets/icons/arrow-down.svg' ) ?>" alt="" width="30" height="30"></div>
             <div class="step-arrow-right"><img src="<?= url( 'assets/icons/arrow.svg' ) ?>" alt="" width="80" height="60"></div>
           <?php endif; ?>
@@ -66,20 +82,39 @@ include DM_LEGAL_DIR . '/inc/parts/hero.php';
 </section>
 
 <!-- ============ ATTRACTION CONTACT ============ -->
+<?php
+/*
+ * Editable via the "Attraction Contact Section" metabox
+ * (Pages → Fixed Prices). Blank fields fall back to these defaults.
+ */
+$dm_ac = dm_legal_ac_args(
+	array(
+		'title'    => 'Limited slots available — Book your consultation now',
+		'intro'    => 'You can choose any format of consultation with our lawyer:',
+		'options'  => $options,
+		'btn_text' => 'Book a Consultation',
+		'btn_href' => 'book-your-lawyer.php',
+	)
+);
+?>
 <section class="attraction-contact" data-aos="fade-up">
   <div class="content-width attraction-contact__row">
-    <h2 class="main-header attraction-contact__title">Limited slots available &mdash; Book your consultation now</h2>
+    <h2 class="main-header attraction-contact__title"><?= e( $dm_ac['title'] ) ?></h2>
     <div class="attraction-contact__intro">
-      <p class="measure-sm">You can choose any format of consultation with our lawyer:</p>
+      <p class="measure-sm"><?= e( $dm_ac['intro'] ) ?></p>
       <div class="attraction-contact__options">
-        <?php foreach ( $options as $option ) : ?>
+        <?php foreach ( $dm_ac['options'] as $option ) : ?>
           <div class="attraction-contact__option">
-            <img src="<?= url( $option['icon'] ) ?>" alt="">
+            <?php if ( ! empty( $option['icon'] ) ) : ?>
+              <img src="<?= url( $option['icon'] ) ?>" alt="">
+            <?php endif; ?>
             <p><?= e( $option['label'] ) ?></p>
           </div>
         <?php endforeach; ?>
       </div>
-      <a class="btn btn-primary" href="<?= url( 'book-your-lawyer.php' ) ?>">Book a Consultation</a>
+      <?php if ( ! empty( $dm_ac['btn_text'] ) ) : ?>
+        <a class="btn btn-primary" href="<?= url( $dm_ac['btn_href'] ) ?>"><?= e( $dm_ac['btn_text'] ) ?></a>
+      <?php endif; ?>
     </div>
   </div>
 </section>
