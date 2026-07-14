@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(/c/laragon/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -r ' *)"
+      "Bash(/c/laragon/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -r ' *)",
+      "Bash(curl -s \"http://dm-legal.test/\")",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://dm-legal.test/)",
+      "Bash(echo \"http: $\\(curl -s -o /dev/null -w '%{http_code}' http://dm-legal.test/\\)\")",
+      "Bash(grep -oE '<b>\\(Warning|Notice|Fatal error|Deprecated\\)</b>:.{0,140}' h.html)",
+      "Bash(/c/laragon/bin/php/php-8.3.16-Win32-vs16-x64/php.exe -l c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/legacy-helpers.php)"
     ]
   }
 }

@@ -70,8 +70,14 @@ if ( ! function_exists( 'url' ) ) {
 		}
 
 		// Pass through absolute URLs, protocol-relative, mailto:, tel:, anchors.
-		if ( preg_match( '#^(https?:|mailto:|tel:|//|#)#i', $path ) ) {
-			return $path;
+		// Deliberately NOT a regex: the pattern needs to match a literal '#'
+		// (anchor links), which collides with '#' as a preg delimiter and
+		// throws "Unknown modifier" — breaking every src/href on the site.
+		$passthrough = array( 'http://', 'https://', 'mailto:', 'tel:', '//', '#' );
+		foreach ( $passthrough as $prefix ) {
+			if ( 0 === stripos( $path, $prefix ) ) {
+				return $path;
+			}
 		}
 
 		$path = ltrim( $path, '/' );

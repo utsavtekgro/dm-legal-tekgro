@@ -121,7 +121,7 @@ if ( 'contact' !== dm_legal_current_slug() ) {
   </div>
 </nav>
 
-<div class="modal-overlay" data-dev-modal hidden role="dialog" aria-modal="true" aria-labelledby="dev-modal-heading">
+<!-- <div class="modal-overlay" data-dev-modal hidden role="dialog" aria-modal="true" aria-labelledby="dev-modal-heading">
   <div class="modal-box">
     <button type="button" class="modal-box__close" data-modal-close aria-label="Close">&#10005;</button>
     <h2 id="dev-modal-heading" class="secondary-header">Website Under Development</h2>
@@ -131,7 +131,7 @@ if ( 'contact' !== dm_legal_current_slug() ) {
       <span>Development Team</span>
     </div>
   </div>
-</div>
+</div> -->
 
 <script id="blogs-data" type="application/json"><?= wp_json_encode( array_map( function ( $b ) {
     $slug = slugify( $b['title'] );
