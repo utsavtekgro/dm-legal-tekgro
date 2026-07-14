@@ -14,16 +14,31 @@
 defined( 'ABSPATH' ) || exit;
 
 // ---------------------------------------------------------------------
-// Firm constants (from the legacy includes/config.php)
+// Firm constants (from the legacy includes/config.php).
+// The contact-related ones now read from DM Legal → Global Settings, so the
+// legacy templates that reference them stay in sync with the admin screen.
 // ---------------------------------------------------------------------
+$dm_legal_phone_display = dm_legal_get_setting( 'phone', '0426 269 954' );
+$dm_legal_phone_tel     = dm_legal_get_setting( 'phone_tel', '' );
+
+if ( '' === $dm_legal_phone_tel ) {
+	// Derive a tel: value from the display number when none was entered.
+	$dm_legal_phone_tel = preg_replace( '/[^0-9+]/', '', $dm_legal_phone_display );
+}
+
 defined( 'SITE_NAME' )          || define( 'SITE_NAME', 'DM Legal' );
 defined( 'SITE_TAGLINE' )       || define( 'SITE_TAGLINE', 'Expert legal advice and representation for your needs.' );
-defined( 'SITE_PHONE_DISPLAY' ) || define( 'SITE_PHONE_DISPLAY', '0426 269 954' );
-defined( 'SITE_PHONE_TEL' )     || define( 'SITE_PHONE_TEL', '+610426269954' );
-defined( 'SITE_WHATSAPP' )      || define( 'SITE_WHATSAPP', 'https://wa.me/+610426269954' );
-defined( 'SITE_EMAIL' )         || define( 'SITE_EMAIL', 'info@dmlegalservices.com.au' );
-defined( 'SITE_ADDRESS_SHORT' ) || define( 'SITE_ADDRESS_SHORT', 'Meriton Suites World Tower, Sydney' );
-defined( 'SITE_MAPS_URL' )      || define( 'SITE_MAPS_URL', 'https://maps.app.goo.gl/jhzb5NCbfToYvgmy5' );
+defined( 'SITE_PHONE_DISPLAY' ) || define( 'SITE_PHONE_DISPLAY', $dm_legal_phone_display );
+defined( 'SITE_PHONE_TEL' )     || define( 'SITE_PHONE_TEL', $dm_legal_phone_tel );
+defined( 'SITE_WHATSAPP' )      || define( 'SITE_WHATSAPP', 'https://wa.me/' . $dm_legal_phone_tel );
+defined( 'SITE_EMAIL' )         || define( 'SITE_EMAIL', dm_legal_get_setting( 'email', 'info@dmlegalservices.com.au' ) );
+defined( 'SITE_ADDRESS_SHORT' ) || define( 'SITE_ADDRESS_SHORT', dm_legal_get_setting( 'address', 'Meriton Suites World Tower, Sydney' ) );
+defined( 'SITE_MAPS_URL' )      || define( 'SITE_MAPS_URL', dm_legal_get_setting( 'maps_url', 'https://maps.app.goo.gl/jhzb5NCbfToYvgmy5' ) );
+defined( 'SITE_OFFICE_HOURS' )  || define( 'SITE_OFFICE_HOURS', dm_legal_get_setting( 'office_hours', 'Mon–Fri: 8:30 AM – 5:30 PM (Sat–Sun: Closed)' ) );
+defined( 'SITE_INSTAGRAM_URL' ) || define( 'SITE_INSTAGRAM_URL', dm_legal_get_setting( 'instagram_url', '' ) );
+defined( 'SITE_FACEBOOK_URL' )  || define( 'SITE_FACEBOOK_URL', dm_legal_get_setting( 'facebook_url', '' ) );
+
+unset( $dm_legal_phone_display, $dm_legal_phone_tel );
 
 if ( ! function_exists( 'e' ) ) {
 	/** Escape a string for safe HTML output (XSS protection). */

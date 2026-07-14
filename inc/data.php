@@ -542,8 +542,11 @@ $officeInfo = [
     'address' => SITE_ADDRESS_SHORT,
     'phoneNumbers' => [SITE_PHONE_DISPLAY],
     'email' => SITE_EMAIL,
-    'hours' => 'Mon–Fri: 8:30 AM – 5:30 PM (Sat–Sun: Closed)',
-    'mapEmbedUrl' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.4862707465377!2d151.20414677653508!3d-33.87712821949169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12afb2e5d60f5d%3A0xdf1da4954cb773cf!2sDM%20Legal%20Sydney!5e0!3m2!1sen!2snp!4v1758097950018!5m2!1sen!2snp',
+    'hours' => SITE_OFFICE_HOURS,
+    'mapEmbedUrl' => dm_legal_get_setting( 'maps_embed_url' ),
+    'mapsUrl' => SITE_MAPS_URL,
+    'instagram' => SITE_INSTAGRAM_URL,
+    'facebook' => SITE_FACEBOOK_URL,
 ];
 
 // ---------------------------------------------------------------------

@@ -56,6 +56,7 @@ $dm_legal_modules = array(
 	'template-tags',      // Reusable, escaped output helpers.
 	'template-functions', // Body classes, schema, a11y filters.
 	'customizer',         // Theme Customizer settings with sanitization.
+	'global-settings',    // "DM Legal → Global Settings" admin page (phone, email, socials…).
 	'legacy-helpers',     // Firm constants + WP-aware url()/e() + render helpers.
 	'pages',              // Auto-provision the Pages backing the legacy templates.
 );
