@@ -335,15 +335,25 @@ $hww_steps = $hww['steps'];
 </section>
 
 <!-- ============ NEWS CAROUSEL ============ -->
+<?php
+$news = dm_legal_news_args(
+  array(
+    'heading'   => 'How We Handle Your Problem',
+    'lead'      => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+    'items'     => $newsData,
+    'view_text' => 'View All',
+    'view_href' => 'blogs.php',
+  )
+);
+?>
 <section class="content-width content-gapping">
   <div class="section-heading" data-aos="fade-up">
-    <h2 class="secondary-header">How We Handle Your Problem</h2>
-    <p class="body-text">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and
-      support in matters related to divorce, child custody, spousal support, and more.</p>
+    <h2 class="secondary-header"><?= e( $news['heading'] ) ?></h2>
+    <p class="body-text"><?= e( $news['lead'] ) ?></p>
   </div>
   <div class="carousel carousel--full" data-autoplay="5000" data-aos="zoom-out-up">
     <div class="carousel__track">
-      <?php foreach ( $newsData as $item ) : ?>
+      <?php foreach ( $news['items'] as $item ) : ?>
         <div class="card-news" style="background-image:url('<?= url( $item['image'] ) ?>')">
           <div class="card-news__body">
             <div class="card-news__meta">
@@ -352,16 +362,20 @@ $hww_steps = $hww['steps'];
             </div>
             <h3><?= e( $item['title'] ) ?></h3>
             <p><?= e( truncate_words( $item['preview'], 55 ) ) ?></p>
-            <a class="btn btn-primary" href="<?= url( $item['link'] ) ?>">Read More about this article</a>
+            <?php if ( ! empty( $item['link'] ) ) : ?>
+              <a class="btn btn-primary" href="<?= url( $item['link'] ) ?>">Read More about this article</a>
+            <?php endif; ?>
           </div>
         </div>
       <?php endforeach; ?>
     </div>
     <div class="carousel__dots"></div>
   </div>
-  <div class="text-center mt-4">
-    <a class="btn btn-primary" href="<?= url( 'blogs.php' ) ?>">View All</a>
-  </div>
+  <?php if ( ! empty( $news['view_text'] ) ) : ?>
+    <div class="text-center mt-4">
+      <a class="btn btn-primary" href="<?= url( $news['view_href'] ) ?>"><?= e( $news['view_text'] ) ?></a>
+    </div>
+  <?php endif; ?>
 </section>
 
 <!-- ============ LATEST BLOGS ============ -->
@@ -403,12 +417,24 @@ $hww_steps = $hww['steps'];
 </section>
 
 <!-- ============ FAQ ============ -->
+<?php
+$dm_faq = dm_legal_faq_args(
+  array(
+    'heading'      => 'Frequently Asked Questions',
+    'lead'         => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.',
+    'items'        => $consultationCostFAQ,
+    'cta_heading'  => 'Direct Connect With Us',
+    'cta_text'     => 'Can’t find the answer you’re looking for? Please chat to our friendly team.',
+    'cta_btn_text' => 'Contact Us',
+    'cta_btn_href' => 'contact.php',
+  )
+);
+?>
 <section class="content-width content-gapping">
-  <h2 class="secondary-header text-center">Frequently Asked Questions</h2>
-  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing
-    comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <h2 class="secondary-header text-center"><?= e( $dm_faq['heading'] ) ?></h2>
+  <p class="body-text text-center section-lead--tight"><?= e( $dm_faq['lead'] ) ?></p>
   <div class="faq-list" data-faq-list>
-    <?php foreach ( $consultationCostFAQ as $faq ) : ?>
+    <?php foreach ( $dm_faq['items'] as $faq ) : ?>
       <div class="faq-item">
         <div class="faq-item__head">
           <h3><?= e( $faq['question'] ) ?></h3>
@@ -426,9 +452,11 @@ $hww_steps = $hww['steps'];
       <img src="<?= url( 'assets/images/avatar2.png' ) ?>" alt="">
       <img src="<?= url( 'assets/images/avatar3.png' ) ?>" alt="">
     </div>
-    <h3>Direct Connect With Us</h3>
-    <p>Can&rsquo;t find the answer you&rsquo;re looking for? Please chat to our friendly team.</p>
-    <a class="btn btn-primary" href="<?= url( 'contact.php' ) ?>">Contact Us</a>
+    <h3><?= e( $dm_faq['cta_heading'] ) ?></h3>
+    <p><?= e( $dm_faq['cta_text'] ) ?></p>
+    <?php if ( ! empty( $dm_faq['cta_btn_text'] ) ) : ?>
+      <a class="btn btn-primary" href="<?= url( $dm_faq['cta_btn_href'] ) ?>"><?= e( $dm_faq['cta_btn_text'] ) ?></a>
+    <?php endif; ?>
   </div>
 </section>
 

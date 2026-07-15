@@ -107,6 +107,26 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'normal',
 			'high'
 		);
+
+		add_meta_box(
+			'dm_legal_news',
+			__( 'News Carousel Section', 'dm-legal' ),
+			'dm_legal_render_news_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		// Reuses the same FAQ metabox as the Fixed Prices page. Meta is
+		// per-post, so the Home page stores its own questions.
+		add_meta_box(
+			'dm_legal_faq',
+			__( 'FAQ Section', 'dm-legal' ),
+			'dm_legal_render_faq_metabox',
+			'page',
+			'normal',
+			'high'
+		);
 	}
 
 	if ( $post instanceof WP_Post && 'fixed-prices' === $post->post_name ) {
@@ -2970,6 +2990,229 @@ function dm_legal_hww_args( array $defaults = array(), $post_id = 0 ) {
 	$steps = get_post_meta( $post_id, '_dm_hww_steps', true );
 	if ( is_array( $steps ) && ! empty( $steps ) ) {
 		$args['steps'] = $steps;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * NEWS CAROUSEL SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the News Carousel metabox: heading, lead, a slide repeater and the
+ * "View All" button.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_news_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_news', 'dm_legal_news_nonce' );
+
+	$heading   = get_post_meta( $post->ID, '_dm_news_heading', true );
+	$lead      = get_post_meta( $post->ID, '_dm_news_lead', true );
+	$items     = get_post_meta( $post->ID, '_dm_news_items', true );
+	$items     = is_array( $items ) ? $items : array();
+	$view_text = get_post_meta( $post->ID, '_dm_news_view_text', true );
+	$view_href = get_post_meta( $post->ID, '_dm_news_view_href', true );
+	?>
+	<style>
+		.dm-news-field { margin-bottom:14px; }
+		.dm-news-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-news-field input[type=text], .dm-news-field textarea { width:100%; max-width:760px; }
+		.dm-news-btn-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:760px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave heading/lead blank to keep the template default. Slides replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-news-field">
+		<label for="dm_news_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_news_heading" name="_dm_news_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="How We Handle Your Problem">
+	</div>
+
+	<div class="dm-news-field">
+		<label for="dm_news_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_news_lead" name="_dm_news_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Slides', 'dm-legal' ); ?></h4>
+	<div id="dm-news-items" class="dm-rep-list">
+		<?php foreach ( $items as $i => $item ) : ?>
+			<?php dm_legal_render_news_item_row( (int) $i, $item ); ?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary dm-rep-add" data-list="#dm-news-items" data-tmpl="#tmpl-dm-news-item" data-item=".dm-rep-row"><?php esc_html_e( '+ Add Slide', 'dm-legal' ); ?></button>
+	</p>
+
+	<h4><?php esc_html_e( 'View All Button', 'dm-legal' ); ?></h4>
+	<div class="dm-news-btn-grid">
+		<input type="text" name="_dm_news_view_text" value="<?php echo esc_attr( $view_text ); ?>" placeholder="<?php esc_attr_e( 'Button label, e.g. View All', 'dm-legal' ); ?>">
+		<input type="text" name="_dm_news_view_href" value="<?php echo esc_attr( $view_href ); ?>" placeholder="<?php esc_attr_e( 'Link, e.g. blogs.php', 'dm-legal' ); ?>">
+	</div>
+	<p class="description"><?php esc_html_e( 'Clear the label to hide the button.', 'dm-legal' ); ?></p>
+
+	<script type="text/html" id="tmpl-dm-news-item">
+		<?php dm_legal_render_news_item_row( '__i__', array() ); ?>
+	</script>
+	<?php
+	dm_legal_repeater_script();
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Render one news-slide row.
+ *
+ * @param int|string $index Row index (or __i__ placeholder).
+ * @param array      $item  Slide data (image/category/date/title/preview/link).
+ * @return void
+ */
+function dm_legal_render_news_item_row( $index, $item ) {
+	$name     = '_dm_news_items[' . $index . ']';
+	$image    = isset( $item['image'] ) ? $item['image'] : '';
+	$category = isset( $item['category'] ) ? $item['category'] : '';
+	$date     = isset( $item['date'] ) ? $item['date'] : '';
+	$title    = isset( $item['title'] ) ? $item['title'] : '';
+	$preview  = isset( $item['preview'] ) ? $item['preview'] : '';
+	$link     = isset( $item['link'] ) ? $item['link'] : '';
+	?>
+	<div class="dm-rep-row" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-rep-remove" aria-label="<?php esc_attr_e( 'Remove slide', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-rep-grid">
+			<label><?php esc_html_e( 'Image', 'dm-legal' ); ?></label>
+			<div>
+				<img src="<?php echo esc_url( $image ); ?>" class="dm-rep-icon dm-media-preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+				<input type="url" class="dm-media-input" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Background image URL', 'dm-legal' ); ?>">
+				<p style="margin:6px 0 0;">
+					<button type="button" class="button dm-media-select"><?php esc_html_e( 'Select Image', 'dm-legal' ); ?></button>
+					<button type="button" class="button dm-media-clear"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+				</p>
+			</div>
+
+			<label><?php esc_html_e( 'Category', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[category]" value="<?php echo esc_attr( $category ); ?>" placeholder="Victories"></div>
+
+			<label><?php esc_html_e( 'Date', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[date]" value="<?php echo esc_attr( $date ); ?>" placeholder="April 26, 2024"></div>
+
+			<label><?php esc_html_e( 'Title', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[title]" value="<?php echo esc_attr( $title ); ?>"></div>
+
+			<label><?php esc_html_e( 'Preview', 'dm-legal' ); ?></label>
+			<div><textarea name="<?php echo esc_attr( $name ); ?>[preview]" rows="3"><?php echo esc_textarea( $preview ); ?></textarea></div>
+
+			<label><?php esc_html_e( 'Link', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[link]" value="<?php echo esc_attr( $link ); ?>" placeholder="blogs.php or https://…"></div>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the News Carousel metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_news_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_news_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_news_nonce'] ) ), 'dm_legal_save_news' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_news_heading'   => 'sanitize_text_field',
+		'_dm_news_lead'      => 'sanitize_textarea_field',
+		'_dm_news_view_text' => 'sanitize_text_field',
+		'_dm_news_view_href' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	// Slides repeater: keep rows with a title or preview.
+	$raw   = isset( $_POST['_dm_news_items'] ) ? wp_unslash( $_POST['_dm_news_items'] ) : array();
+	$items = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$title   = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+			$preview = isset( $row['preview'] ) ? sanitize_textarea_field( $row['preview'] ) : '';
+			if ( '' === $title && '' === $preview ) {
+				continue;
+			}
+			$items[] = array(
+				'image'    => isset( $row['image'] ) ? esc_url_raw( trim( $row['image'] ) ) : '',
+				'category' => isset( $row['category'] ) ? sanitize_text_field( $row['category'] ) : '',
+				'date'     => isset( $row['date'] ) ? sanitize_text_field( $row['date'] ) : '',
+				'title'    => $title,
+				'preview'  => $preview,
+				'link'     => isset( $row['link'] ) ? sanitize_text_field( $row['link'] ) : '',
+			);
+		}
+	}
+
+	if ( empty( $items ) ) {
+		delete_post_meta( $post_id, '_dm_news_items' );
+	} else {
+		update_post_meta( $post_id, '_dm_news_items', $items );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_news_metabox' );
+
+/**
+ * Merge saved News Carousel meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, items, view_text, view_href.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_news_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$map = array(
+		'heading'   => '_dm_news_heading',
+		'lead'      => '_dm_news_lead',
+		'view_text' => '_dm_news_view_text',
+		'view_href' => '_dm_news_view_href',
+	);
+
+	foreach ( $map as $arg_key => $meta_key ) {
+		$value = trim( (string) get_post_meta( $post_id, $meta_key, true ) );
+		if ( '' !== $value ) {
+			$args[ $arg_key ] = $value;
+		}
+	}
+
+	$items = get_post_meta( $post_id, '_dm_news_items', true );
+	if ( is_array( $items ) && ! empty( $items ) ) {
+		$args['items'] = $items;
 	}
 
 	return $args;
