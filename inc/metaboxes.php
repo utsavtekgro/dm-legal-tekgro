@@ -62,6 +62,51 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'normal',
 			'high'
 		);
+
+		add_meta_box(
+			'dm_legal_expression',
+			__( 'Expert Guidance (Expression) Section', 'dm-legal' ),
+			'dm_legal_render_expr_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		add_meta_box(
+			'dm_legal_why_choose_us',
+			__( 'Why Choose Us Section', 'dm-legal' ),
+			'dm_legal_render_wcu_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		add_meta_box(
+			'dm_legal_affiliations',
+			__( 'Affiliations & Membership Section', 'dm-legal' ),
+			'dm_legal_render_aff_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		add_meta_box(
+			'dm_legal_get_support',
+			__( 'Professional Legal Support Section', 'dm-legal' ),
+			'dm_legal_render_gs_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
+		add_meta_box(
+			'dm_legal_how_we_work',
+			__( 'How We Work Section', 'dm-legal' ),
+			'dm_legal_render_hww_metabox',
+			'page',
+			'normal',
+			'high'
+		);
 	}
 
 	if ( $post instanceof WP_Post && 'fixed-prices' === $post->post_name ) {
@@ -1947,4 +1992,1097 @@ function dm_legal_about_args( array $defaults = array(), $post_id = 0 ) {
 	}
 
 	return $args;
+}
+
+/**
+ * Split a textarea value into an array of paragraphs on blank lines.
+ *
+ * @param string $text Raw textarea content.
+ * @return array<int,string> Trimmed, non-empty paragraphs.
+ */
+function dm_legal_split_paragraphs( $text ) {
+	$parts = preg_split( '/(?:\r\n|\r|\n){2,}/', (string) $text );
+	$parts = array_filter( array_map( 'trim', (array) $parts ) );
+
+	return array_values( $parts );
+}
+
+/* =====================================================================
+ * EXPERT GUIDANCE / EXPRESSION SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the Expert Guidance metabox: heading, body paragraphs, and image.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_expr_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_expr', 'dm_legal_expr_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_expr_heading', true );
+	$body    = get_post_meta( $post->ID, '_dm_expr_body', true );
+	$image   = get_post_meta( $post->ID, '_dm_expr_image', true );
+	$alt     = get_post_meta( $post->ID, '_dm_expr_image_alt', true );
+	?>
+	<style>
+		.dm-expr-field { margin-bottom:14px; }
+		.dm-expr-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-expr-field input[type=text], .dm-expr-field input[type=url], .dm-expr-field textarea { width:100%; max-width:760px; }
+		.dm-expr-preview { max-width:220px; height:auto; display:block; margin-bottom:8px; border:1px solid #dcdcde; border-radius:4px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-expr-field">
+		<label for="dm_expr_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_expr_heading" name="_dm_expr_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Expert Guidance from Accredited Legal Professionals">
+	</div>
+
+	<div class="dm-expr-field">
+		<label for="dm_expr_body"><?php esc_html_e( 'Body Paragraphs', 'dm-legal' ); ?></label>
+		<textarea id="dm_expr_body" name="_dm_expr_body" rows="10"><?php echo esc_textarea( $body ); ?></textarea>
+		<p class="description"><?php esc_html_e( 'Separate paragraphs with a blank line. Each block becomes its own paragraph.', 'dm-legal' ); ?></p>
+	</div>
+
+	<div class="dm-expr-field">
+		<label for="dm_expr_image"><?php esc_html_e( 'Image', 'dm-legal' ); ?></label>
+		<img src="<?php echo esc_url( $image ); ?>" class="dm-expr-preview" id="dm_expr_preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+		<input type="url" id="dm_expr_image" name="_dm_expr_image" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Image URL', 'dm-legal' ); ?>">
+		<p style="margin-top:6px;">
+			<button type="button" class="button dm-media-select" data-target="#dm_expr_image" data-preview="#dm_expr_preview"><?php esc_html_e( 'Select Image', 'dm-legal' ); ?></button>
+			<button type="button" class="button dm-media-clear" data-target="#dm_expr_image" data-preview="#dm_expr_preview"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+		</p>
+	</div>
+
+	<div class="dm-expr-field">
+		<label for="dm_expr_image_alt"><?php esc_html_e( 'Image Alt Text', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_expr_image_alt" name="_dm_expr_image_alt" value="<?php echo esc_attr( $alt ); ?>" placeholder="Expert guidance from accredited legal professionals">
+	</div>
+	<?php
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Save the Expert Guidance metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_expr_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_expr_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_expr_nonce'] ) ), 'dm_legal_save_expr' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_expr_heading'   => 'sanitize_text_field',
+		'_dm_expr_body'      => 'sanitize_textarea_field',
+		'_dm_expr_image'     => 'esc_url_raw',
+		'_dm_expr_image_alt' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_expr_metabox' );
+
+/**
+ * Merge saved Expert Guidance meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, body (array of paragraphs), image, image_alt.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_expr_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_expr_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$body = dm_legal_split_paragraphs( get_post_meta( $post_id, '_dm_expr_body', true ) );
+	if ( ! empty( $body ) ) {
+		$args['body'] = $body;
+	}
+
+	$image = trim( (string) get_post_meta( $post_id, '_dm_expr_image', true ) );
+	if ( '' !== $image ) {
+		$args['image'] = $image;
+	}
+
+	$alt = trim( (string) get_post_meta( $post_id, '_dm_expr_image_alt', true ) );
+	if ( '' !== $alt ) {
+		$args['image_alt'] = $alt;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * WHY CHOOSE US SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the Why Choose Us metabox: heading, lead, stats repeater and
+ * services repeater.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_wcu_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_wcu', 'dm_legal_wcu_nonce' );
+
+	$heading  = get_post_meta( $post->ID, '_dm_wcu_heading', true );
+	$lead     = get_post_meta( $post->ID, '_dm_wcu_lead', true );
+	$stats    = get_post_meta( $post->ID, '_dm_wcu_stats', true );
+	$stats    = is_array( $stats ) ? $stats : array();
+	$services = get_post_meta( $post->ID, '_dm_wcu_services', true );
+	$services = is_array( $services ) ? $services : array();
+	?>
+	<style>
+		.dm-wcu-field { margin-bottom:14px; }
+		.dm-wcu-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-wcu-field input[type=text], .dm-wcu-field textarea { width:100%; max-width:760px; }
+		.dm-rep-row { border:1px solid #dcdcde; border-radius:4px; padding:12px 34px 12px 12px; margin-bottom:10px; background:#fff; position:relative; }
+		.dm-rep-grid { display:grid; grid-template-columns:90px 1fr; gap:10px 14px; align-items:start; }
+		.dm-rep-row label { font-weight:600; padding-top:6px; }
+		.dm-rep-row input[type=text], .dm-rep-row input[type=url], .dm-rep-row textarea { width:100%; }
+		.dm-rep-icon { width:40px; height:40px; object-fit:contain; border:1px solid #dcdcde; border-radius:4px; padding:4px; background:#fff; margin-bottom:6px; }
+		.dm-rep-remove { position:absolute; top:8px; right:8px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave heading/lead blank to keep the template default. Stats and services replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-wcu-field">
+		<label for="dm_wcu_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_wcu_heading" name="_dm_wcu_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Why To Choose Us">
+	</div>
+
+	<div class="dm-wcu-field">
+		<label for="dm_wcu_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_wcu_lead" name="_dm_wcu_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Stats', 'dm-legal' ); ?></h4>
+	<div id="dm-wcu-stats" class="dm-rep-list">
+		<?php foreach ( $stats as $i => $stat ) : ?>
+			<?php
+			dm_legal_render_wcu_stat_row(
+				(int) $i,
+				isset( $stat['value'] ) ? $stat['value'] : '',
+				isset( $stat['label'] ) ? $stat['label'] : ''
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary dm-rep-add" data-list="#dm-wcu-stats" data-tmpl="#tmpl-dm-wcu-stat" data-item=".dm-rep-row"><?php esc_html_e( '+ Add Stat', 'dm-legal' ); ?></button>
+	</p>
+
+	<h4><?php esc_html_e( 'Service Cards', 'dm-legal' ); ?></h4>
+	<div id="dm-wcu-services" class="dm-rep-list">
+		<?php foreach ( $services as $i => $service ) : ?>
+			<?php
+			dm_legal_render_wcu_service_row(
+				(int) $i,
+				isset( $service['image'] ) ? $service['image'] : '',
+				isset( $service['title'] ) ? $service['title'] : '',
+				isset( $service['description'] ) ? $service['description'] : ''
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary dm-rep-add" data-list="#dm-wcu-services" data-tmpl="#tmpl-dm-wcu-service" data-item=".dm-rep-row"><?php esc_html_e( '+ Add Service', 'dm-legal' ); ?></button>
+	</p>
+
+	<script type="text/html" id="tmpl-dm-wcu-stat">
+		<?php dm_legal_render_wcu_stat_row( '__i__', '', '' ); ?>
+	</script>
+	<script type="text/html" id="tmpl-dm-wcu-service">
+		<?php dm_legal_render_wcu_service_row( '__i__', '', '', '' ); ?>
+	</script>
+	<?php
+	dm_legal_repeater_script();
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Render one stat row.
+ *
+ * @param int|string $index Row index (or __i__ placeholder).
+ * @param string     $value Stat value, e.g. 12+.
+ * @param string     $label Stat label.
+ * @return void
+ */
+function dm_legal_render_wcu_stat_row( $index, $value, $label ) {
+	$name = '_dm_wcu_stats[' . $index . ']';
+	?>
+	<div class="dm-rep-row" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-rep-remove" aria-label="<?php esc_attr_e( 'Remove stat', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-rep-grid">
+			<label><?php esc_html_e( 'Value', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[value]" value="<?php echo esc_attr( $value ); ?>" placeholder="12+"></div>
+
+			<label><?php esc_html_e( 'Label', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[label]" value="<?php echo esc_attr( $label ); ?>" placeholder="Years of Knowledge"></div>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Render one service-card row.
+ *
+ * @param int|string $index       Row index (or __i__ placeholder).
+ * @param string     $image       Icon URL.
+ * @param string     $title       Card title.
+ * @param string     $description Card description.
+ * @return void
+ */
+function dm_legal_render_wcu_service_row( $index, $image, $title, $description ) {
+	$name = '_dm_wcu_services[' . $index . ']';
+	?>
+	<div class="dm-rep-row" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-rep-remove" aria-label="<?php esc_attr_e( 'Remove service', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-rep-grid">
+			<label><?php esc_html_e( 'Icon', 'dm-legal' ); ?></label>
+			<div>
+				<img src="<?php echo esc_url( $image ); ?>" class="dm-rep-icon dm-media-preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+				<input type="url" class="dm-media-input" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Icon URL', 'dm-legal' ); ?>">
+				<p style="margin:6px 0 0;">
+					<button type="button" class="button dm-media-select"><?php esc_html_e( 'Select Icon', 'dm-legal' ); ?></button>
+					<button type="button" class="button dm-media-clear"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+				</p>
+			</div>
+
+			<label><?php esc_html_e( 'Title', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[title]" value="<?php echo esc_attr( $title ); ?>"></div>
+
+			<label><?php esc_html_e( 'Description', 'dm-legal' ); ?></label>
+			<div><textarea name="<?php echo esc_attr( $name ); ?>[description]" rows="2"><?php echo esc_textarea( $description ); ?></textarea></div>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the Why Choose Us metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_wcu_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_wcu_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_wcu_nonce'] ) ), 'dm_legal_save_wcu' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$heading = isset( $_POST['_dm_wcu_heading'] ) ? sanitize_text_field( wp_unslash( $_POST['_dm_wcu_heading'] ) ) : '';
+	$lead    = isset( $_POST['_dm_wcu_lead'] ) ? sanitize_textarea_field( wp_unslash( $_POST['_dm_wcu_lead'] ) ) : '';
+
+	if ( '' === $heading ) {
+		delete_post_meta( $post_id, '_dm_wcu_heading' );
+	} else {
+		update_post_meta( $post_id, '_dm_wcu_heading', $heading );
+	}
+
+	if ( '' === $lead ) {
+		delete_post_meta( $post_id, '_dm_wcu_lead' );
+	} else {
+		update_post_meta( $post_id, '_dm_wcu_lead', $lead );
+	}
+
+	// Stats repeater: keep rows with a value or label.
+	$raw   = isset( $_POST['_dm_wcu_stats'] ) ? wp_unslash( $_POST['_dm_wcu_stats'] ) : array();
+	$stats = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$value = isset( $row['value'] ) ? sanitize_text_field( $row['value'] ) : '';
+			$label = isset( $row['label'] ) ? sanitize_text_field( $row['label'] ) : '';
+			if ( '' === $value && '' === $label ) {
+				continue;
+			}
+			$stats[] = array(
+				'value' => $value,
+				'label' => $label,
+			);
+		}
+	}
+
+	if ( empty( $stats ) ) {
+		delete_post_meta( $post_id, '_dm_wcu_stats' );
+	} else {
+		update_post_meta( $post_id, '_dm_wcu_stats', $stats );
+	}
+
+	// Services repeater: keep rows with a title or description.
+	$raw      = isset( $_POST['_dm_wcu_services'] ) ? wp_unslash( $_POST['_dm_wcu_services'] ) : array();
+	$services = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$title       = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+			$description = isset( $row['description'] ) ? sanitize_textarea_field( $row['description'] ) : '';
+			$image       = isset( $row['image'] ) ? esc_url_raw( trim( $row['image'] ) ) : '';
+			if ( '' === $title && '' === $description ) {
+				continue;
+			}
+			$services[] = array(
+				'image'       => $image,
+				'title'       => $title,
+				'description' => $description,
+			);
+		}
+	}
+
+	if ( empty( $services ) ) {
+		delete_post_meta( $post_id, '_dm_wcu_services' );
+	} else {
+		update_post_meta( $post_id, '_dm_wcu_services', $services );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_wcu_metabox' );
+
+/**
+ * Merge saved Why Choose Us meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, stats, services.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_wcu_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_wcu_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$lead = trim( (string) get_post_meta( $post_id, '_dm_wcu_lead', true ) );
+	if ( '' !== $lead ) {
+		$args['lead'] = $lead;
+	}
+
+	$stats = get_post_meta( $post_id, '_dm_wcu_stats', true );
+	if ( is_array( $stats ) && ! empty( $stats ) ) {
+		$args['stats'] = $stats;
+	}
+
+	$services = get_post_meta( $post_id, '_dm_wcu_services', true );
+	if ( is_array( $services ) && ! empty( $services ) ) {
+		$args['services'] = $services;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * AFFILIATIONS & MEMBERSHIP SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the Affiliations metabox: heading, lead, and a logo repeater.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_aff_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_aff', 'dm_legal_aff_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_aff_heading', true );
+	$lead    = get_post_meta( $post->ID, '_dm_aff_lead', true );
+	$logos   = get_post_meta( $post->ID, '_dm_aff_logos', true );
+	$logos   = is_array( $logos ) ? $logos : array();
+	?>
+	<style>
+		.dm-aff-field { margin-bottom:14px; }
+		.dm-aff-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-aff-field input[type=text], .dm-aff-field textarea { width:100%; max-width:760px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave heading/lead blank to keep the template default. Logos replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-aff-field">
+		<label for="dm_aff_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_aff_heading" name="_dm_aff_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Our Affiliations & Membership">
+	</div>
+
+	<div class="dm-aff-field">
+		<label for="dm_aff_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_aff_lead" name="_dm_aff_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Logos', 'dm-legal' ); ?></h4>
+	<div id="dm-aff-logos" class="dm-rep-list">
+		<?php foreach ( $logos as $i => $logo ) : ?>
+			<?php
+			dm_legal_render_aff_logo_row(
+				(int) $i,
+				isset( $logo['image'] ) ? $logo['image'] : '',
+				isset( $logo['alt'] ) ? $logo['alt'] : ''
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary dm-rep-add" data-list="#dm-aff-logos" data-tmpl="#tmpl-dm-aff-logo" data-item=".dm-rep-row"><?php esc_html_e( '+ Add Logo', 'dm-legal' ); ?></button>
+	</p>
+
+	<script type="text/html" id="tmpl-dm-aff-logo">
+		<?php dm_legal_render_aff_logo_row( '__i__', '', '' ); ?>
+	</script>
+	<?php
+	dm_legal_repeater_script();
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Render one affiliation-logo row.
+ *
+ * @param int|string $index Row index (or __i__ placeholder).
+ * @param string     $image Logo URL.
+ * @param string     $alt   Alt text.
+ * @return void
+ */
+function dm_legal_render_aff_logo_row( $index, $image, $alt ) {
+	$name = '_dm_aff_logos[' . $index . ']';
+	?>
+	<div class="dm-rep-row" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-rep-remove" aria-label="<?php esc_attr_e( 'Remove logo', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-rep-grid">
+			<label><?php esc_html_e( 'Logo', 'dm-legal' ); ?></label>
+			<div>
+				<img src="<?php echo esc_url( $image ); ?>" class="dm-rep-icon dm-media-preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+				<input type="url" class="dm-media-input" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Logo URL', 'dm-legal' ); ?>">
+				<p style="margin:6px 0 0;">
+					<button type="button" class="button dm-media-select"><?php esc_html_e( 'Select Logo', 'dm-legal' ); ?></button>
+					<button type="button" class="button dm-media-clear"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+				</p>
+			</div>
+
+			<label><?php esc_html_e( 'Alt Text', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[alt]" value="<?php echo esc_attr( $alt ); ?>" placeholder="Doyles 2016 Award"></div>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the Affiliations metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_aff_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_aff_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_aff_nonce'] ) ), 'dm_legal_save_aff' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$heading = isset( $_POST['_dm_aff_heading'] ) ? sanitize_text_field( wp_unslash( $_POST['_dm_aff_heading'] ) ) : '';
+	$lead    = isset( $_POST['_dm_aff_lead'] ) ? sanitize_textarea_field( wp_unslash( $_POST['_dm_aff_lead'] ) ) : '';
+
+	if ( '' === $heading ) {
+		delete_post_meta( $post_id, '_dm_aff_heading' );
+	} else {
+		update_post_meta( $post_id, '_dm_aff_heading', $heading );
+	}
+
+	if ( '' === $lead ) {
+		delete_post_meta( $post_id, '_dm_aff_lead' );
+	} else {
+		update_post_meta( $post_id, '_dm_aff_lead', $lead );
+	}
+
+	// Logos repeater: keep rows with an image.
+	$raw   = isset( $_POST['_dm_aff_logos'] ) ? wp_unslash( $_POST['_dm_aff_logos'] ) : array();
+	$logos = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$image = isset( $row['image'] ) ? esc_url_raw( trim( $row['image'] ) ) : '';
+			$alt   = isset( $row['alt'] ) ? sanitize_text_field( $row['alt'] ) : '';
+			if ( '' === $image ) {
+				continue;
+			}
+			$logos[] = array(
+				'image' => $image,
+				'alt'   => $alt,
+			);
+		}
+	}
+
+	if ( empty( $logos ) ) {
+		delete_post_meta( $post_id, '_dm_aff_logos' );
+	} else {
+		update_post_meta( $post_id, '_dm_aff_logos', $logos );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_aff_metabox' );
+
+/**
+ * Merge saved Affiliations meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, logos (image/alt).
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_aff_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_aff_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$lead = trim( (string) get_post_meta( $post_id, '_dm_aff_lead', true ) );
+	if ( '' !== $lead ) {
+		$args['lead'] = $lead;
+	}
+
+	$logos = get_post_meta( $post_id, '_dm_aff_logos', true );
+	if ( is_array( $logos ) && ! empty( $logos ) ) {
+		$args['logos'] = $logos;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * PROFESSIONAL LEGAL SUPPORT (GET SUPPORT) SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the Get Support metabox: heading, top paragraphs, feature list,
+ * closing paragraph, and image.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_gs_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_gs', 'dm_legal_gs_nonce' );
+
+	$heading  = get_post_meta( $post->ID, '_dm_gs_heading', true );
+	$top      = get_post_meta( $post->ID, '_dm_gs_body_top', true );
+	$features = get_post_meta( $post->ID, '_dm_gs_features', true );
+	$bottom   = get_post_meta( $post->ID, '_dm_gs_body_bottom', true );
+	$image    = get_post_meta( $post->ID, '_dm_gs_image', true );
+	$alt      = get_post_meta( $post->ID, '_dm_gs_image_alt', true );
+	?>
+	<style>
+		.dm-gs-field { margin-bottom:14px; }
+		.dm-gs-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-gs-field input[type=text], .dm-gs-field input[type=url], .dm-gs-field textarea { width:100%; max-width:760px; }
+		.dm-gs-preview { max-width:220px; height:auto; display:block; margin-bottom:8px; border:1px solid #dcdcde; border-radius:4px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_gs_heading" name="_dm_gs_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Professional Legal Support">
+	</div>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_body_top"><?php esc_html_e( 'Body Paragraphs (above the list)', 'dm-legal' ); ?></label>
+		<textarea id="dm_gs_body_top" name="_dm_gs_body_top" rows="7"><?php echo esc_textarea( $top ); ?></textarea>
+		<p class="description"><?php esc_html_e( 'Separate paragraphs with a blank line.', 'dm-legal' ); ?></p>
+	</div>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_features"><?php esc_html_e( 'Feature List', 'dm-legal' ); ?></label>
+		<textarea id="dm_gs_features" name="_dm_gs_features" rows="6" placeholder="Business Law&#10;Commercial Law&#10;Criminal Law"><?php echo esc_textarea( $features ); ?></textarea>
+		<p class="description"><?php esc_html_e( 'One item per line. Each renders with a check icon.', 'dm-legal' ); ?></p>
+	</div>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_body_bottom"><?php esc_html_e( 'Closing Paragraph (below the list)', 'dm-legal' ); ?></label>
+		<textarea id="dm_gs_body_bottom" name="_dm_gs_body_bottom" rows="3"><?php echo esc_textarea( $bottom ); ?></textarea>
+	</div>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_image"><?php esc_html_e( 'Image', 'dm-legal' ); ?></label>
+		<img src="<?php echo esc_url( $image ); ?>" class="dm-gs-preview" id="dm_gs_preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+		<input type="url" id="dm_gs_image" name="_dm_gs_image" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Image URL', 'dm-legal' ); ?>">
+		<p style="margin-top:6px;">
+			<button type="button" class="button dm-media-select" data-target="#dm_gs_image" data-preview="#dm_gs_preview"><?php esc_html_e( 'Select Image', 'dm-legal' ); ?></button>
+			<button type="button" class="button dm-media-clear" data-target="#dm_gs_image" data-preview="#dm_gs_preview"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+		</p>
+	</div>
+
+	<div class="dm-gs-field">
+		<label for="dm_gs_image_alt"><?php esc_html_e( 'Image Alt Text', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_gs_image_alt" name="_dm_gs_image_alt" value="<?php echo esc_attr( $alt ); ?>" placeholder="Professional legal support">
+	</div>
+	<?php
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Save the Get Support metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_gs_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_gs_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_gs_nonce'] ) ), 'dm_legal_save_gs' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_gs_heading'     => 'sanitize_text_field',
+		'_dm_gs_body_top'    => 'sanitize_textarea_field',
+		'_dm_gs_features'    => 'sanitize_textarea_field',
+		'_dm_gs_body_bottom' => 'sanitize_textarea_field',
+		'_dm_gs_image'       => 'esc_url_raw',
+		'_dm_gs_image_alt'   => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_gs_metabox' );
+
+/**
+ * Merge saved Get Support meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, body_top (array), features (array),
+ *                        body_bottom, image, image_alt.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_gs_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_gs_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$top = dm_legal_split_paragraphs( get_post_meta( $post_id, '_dm_gs_body_top', true ) );
+	if ( ! empty( $top ) ) {
+		$args['body_top'] = $top;
+	}
+
+	$features = get_post_meta( $post_id, '_dm_gs_features', true );
+	$features = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', (string) $features ) ) );
+	if ( ! empty( $features ) ) {
+		$args['features'] = array_values( $features );
+	}
+
+	$bottom = trim( (string) get_post_meta( $post_id, '_dm_gs_body_bottom', true ) );
+	if ( '' !== $bottom ) {
+		$args['body_bottom'] = $bottom;
+	}
+
+	$image = trim( (string) get_post_meta( $post_id, '_dm_gs_image', true ) );
+	if ( '' !== $image ) {
+		$args['image'] = $image;
+	}
+
+	$alt = trim( (string) get_post_meta( $post_id, '_dm_gs_image_alt', true ) );
+	if ( '' !== $alt ) {
+		$args['image_alt'] = $alt;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * HOW WE WORK SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the How We Work metabox: heading, lead, and a steps repeater.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_hww_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_hww', 'dm_legal_hww_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_hww_heading', true );
+	$lead    = get_post_meta( $post->ID, '_dm_hww_lead', true );
+	$steps   = get_post_meta( $post->ID, '_dm_hww_steps', true );
+	$steps   = is_array( $steps ) ? $steps : array();
+	?>
+	<style>
+		.dm-hww-field { margin-bottom:14px; }
+		.dm-hww-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-hww-field input[type=text], .dm-hww-field textarea { width:100%; max-width:760px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave heading/lead blank to keep the template default. Steps replace the defaults only if you add at least one.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-hww-field">
+		<label for="dm_hww_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_hww_heading" name="_dm_hww_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="How We Work">
+	</div>
+
+	<div class="dm-hww-field">
+		<label for="dm_hww_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_hww_lead" name="_dm_hww_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<h4><?php esc_html_e( 'Steps', 'dm-legal' ); ?></h4>
+	<div id="dm-hww-steps" class="dm-rep-list">
+		<?php foreach ( $steps as $i => $step ) : ?>
+			<?php
+			dm_legal_render_hww_step_row(
+				(int) $i,
+				isset( $step['image'] ) ? $step['image'] : '',
+				isset( $step['title'] ) ? $step['title'] : '',
+				isset( $step['description'] ) ? $step['description'] : ''
+			);
+			?>
+		<?php endforeach; ?>
+	</div>
+	<p>
+		<button type="button" class="button button-secondary dm-rep-add" data-list="#dm-hww-steps" data-tmpl="#tmpl-dm-hww-step" data-item=".dm-rep-row"><?php esc_html_e( '+ Add Step', 'dm-legal' ); ?></button>
+	</p>
+
+	<script type="text/html" id="tmpl-dm-hww-step">
+		<?php dm_legal_render_hww_step_row( '__i__', '', '', '' ); ?>
+	</script>
+	<?php
+	dm_legal_repeater_script();
+	dm_legal_media_picker_script();
+}
+
+/**
+ * Render one How We Work step row.
+ *
+ * @param int|string $index       Row index (or __i__ placeholder).
+ * @param string     $image       Icon URL.
+ * @param string     $title       Step title.
+ * @param string     $description Step description.
+ * @return void
+ */
+function dm_legal_render_hww_step_row( $index, $image, $title, $description ) {
+	$name = '_dm_hww_steps[' . $index . ']';
+	?>
+	<div class="dm-rep-row" data-index="<?php echo esc_attr( $index ); ?>">
+		<button type="button" class="button-link dm-rep-remove" aria-label="<?php esc_attr_e( 'Remove step', 'dm-legal' ); ?>">&times;</button>
+		<div class="dm-rep-grid">
+			<label><?php esc_html_e( 'Icon', 'dm-legal' ); ?></label>
+			<div>
+				<img src="<?php echo esc_url( $image ); ?>" class="dm-rep-icon dm-media-preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+				<input type="url" class="dm-media-input" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Icon URL', 'dm-legal' ); ?>">
+				<p style="margin:6px 0 0;">
+					<button type="button" class="button dm-media-select"><?php esc_html_e( 'Select Icon', 'dm-legal' ); ?></button>
+					<button type="button" class="button dm-media-clear"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+				</p>
+			</div>
+
+			<label><?php esc_html_e( 'Title', 'dm-legal' ); ?></label>
+			<div><input type="text" name="<?php echo esc_attr( $name ); ?>[title]" value="<?php echo esc_attr( $title ); ?>"></div>
+
+			<label><?php esc_html_e( 'Description', 'dm-legal' ); ?></label>
+			<div><textarea name="<?php echo esc_attr( $name ); ?>[description]" rows="2"><?php echo esc_textarea( $description ); ?></textarea></div>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Save the How We Work metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_hww_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_hww_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_hww_nonce'] ) ), 'dm_legal_save_hww' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$heading = isset( $_POST['_dm_hww_heading'] ) ? sanitize_text_field( wp_unslash( $_POST['_dm_hww_heading'] ) ) : '';
+	$lead    = isset( $_POST['_dm_hww_lead'] ) ? sanitize_textarea_field( wp_unslash( $_POST['_dm_hww_lead'] ) ) : '';
+
+	if ( '' === $heading ) {
+		delete_post_meta( $post_id, '_dm_hww_heading' );
+	} else {
+		update_post_meta( $post_id, '_dm_hww_heading', $heading );
+	}
+
+	if ( '' === $lead ) {
+		delete_post_meta( $post_id, '_dm_hww_lead' );
+	} else {
+		update_post_meta( $post_id, '_dm_hww_lead', $lead );
+	}
+
+	// Steps repeater: keep rows with a title or description.
+	$raw   = isset( $_POST['_dm_hww_steps'] ) ? wp_unslash( $_POST['_dm_hww_steps'] ) : array();
+	$steps = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$title       = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+			$description = isset( $row['description'] ) ? sanitize_textarea_field( $row['description'] ) : '';
+			$image       = isset( $row['image'] ) ? esc_url_raw( trim( $row['image'] ) ) : '';
+			if ( '' === $title && '' === $description ) {
+				continue;
+			}
+			$steps[] = array(
+				'image'       => $image,
+				'title'       => $title,
+				'description' => $description,
+			);
+		}
+	}
+
+	if ( empty( $steps ) ) {
+		delete_post_meta( $post_id, '_dm_hww_steps' );
+	} else {
+		update_post_meta( $post_id, '_dm_hww_steps', $steps );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_hww_metabox' );
+
+/**
+ * Merge saved How We Work meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, steps (image/title/description).
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_hww_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$heading = trim( (string) get_post_meta( $post_id, '_dm_hww_heading', true ) );
+	if ( '' !== $heading ) {
+		$args['heading'] = $heading;
+	}
+
+	$lead = trim( (string) get_post_meta( $post_id, '_dm_hww_lead', true ) );
+	if ( '' !== $lead ) {
+		$args['lead'] = $lead;
+	}
+
+	$steps = get_post_meta( $post_id, '_dm_hww_steps', true );
+	if ( is_array( $steps ) && ! empty( $steps ) ) {
+		$args['steps'] = $steps;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * SHARED ADMIN SCRIPTS (repeater add/remove + media picker)
+ *
+ * Printed inside each metabox that needs them. Guarded so the handlers
+ * bind only once even when several metaboxes call them on one screen.
+ * ================================================================== */
+
+/**
+ * Print the generic repeater add/remove handler once per request.
+ *
+ * Works with any list container using: an "+ Add" button with class
+ * dm-rep-add and data-list/data-tmpl/data-item attributes, rows carrying
+ * data-index, and a remove button with class dm-rep-remove.
+ *
+ * @return void
+ */
+function dm_legal_repeater_script() {
+	static $printed = false;
+	if ( $printed ) {
+		return;
+	}
+	$printed = true;
+	?>
+	<script>
+	(function ($) {
+		function nextIndex($list, itemSel) {
+			var max = -1;
+			$list.find(itemSel).each(function () {
+				var i = parseInt($(this).data('index'), 10);
+				if (!isNaN(i) && i > max) { max = i; }
+			});
+			return max + 1;
+		}
+
+		$(document).on('click', '.dm-rep-add', function (e) {
+			e.preventDefault();
+			var $btn  = $(this);
+			var $list = $($btn.data('list'));
+			var tmpl  = $($btn.data('tmpl')).html();
+			var item  = $btn.data('item');
+			if (!$list.length || !tmpl) { return; }
+			$list.append(tmpl.replace(/__i__/g, nextIndex($list, item)));
+		});
+
+		$(document).on('click', '.dm-rep-remove', function (e) {
+			e.preventDefault();
+			$(this).closest('[data-index]').remove();
+		});
+	})(jQuery);
+	</script>
+	<?php
+}
+
+/**
+ * Print the generic media-picker handler once per request.
+ *
+ * Two usage styles are supported:
+ *  - Single field: a .dm-media-select / .dm-media-clear button with
+ *    data-target (input selector) and data-preview (img selector).
+ *  - Repeater row: a .dm-media-select / .dm-media-clear button with no data
+ *    attributes; it targets the .dm-media-input and .dm-media-preview within
+ *    its own row (nearest ancestor carrying data-index).
+ *
+ * @return void
+ */
+function dm_legal_media_picker_script() {
+	static $printed = false;
+	if ( $printed ) {
+		return;
+	}
+	$printed = true;
+	?>
+	<script>
+	(function ($) {
+		function ctx($btn) {
+			var target  = $btn.data('target');
+			var preview = $btn.data('preview');
+			if (target) {
+				return { $input: $(target), $img: preview ? $(preview) : $() };
+			}
+			var $row = $btn.closest('[data-index]');
+			return { $input: $row.find('.dm-media-input').first(), $img: $row.find('.dm-media-preview').first() };
+		}
+
+		$(document).on('click', '.dm-media-select', function (e) {
+			e.preventDefault();
+			var c = ctx($(this));
+			var frame = wp.media({
+				title: '<?php echo esc_js( __( 'Select Image', 'dm-legal' ) ); ?>',
+				button: { text: '<?php echo esc_js( __( 'Use this image', 'dm-legal' ) ); ?>' },
+				library: { type: 'image' },
+				multiple: false
+			});
+			frame.on('select', function () {
+				var url = frame.state().get('selection').first().toJSON().url;
+				c.$input.val(url);
+				c.$img.attr('src', url).show();
+			});
+			frame.open();
+		});
+
+		$(document).on('click', '.dm-media-clear', function (e) {
+			e.preventDefault();
+			var c = ctx($(this));
+			c.$input.val('');
+			c.$img.hide();
+		});
+	})(jQuery);
+	</script>
+	<?php
 }

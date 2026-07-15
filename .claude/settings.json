@@ -13,7 +13,9 @@
       "Bash(grep -oE '<b>\\(Fatal error|Warning|Parse error\\)</b>.{0,300}')",
       "Bash(php -l inc/metaboxes.php)",
       "Bash(php -l front-page.php)",
-      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\"; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")"
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\"; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\")"
     ]
   }
 }

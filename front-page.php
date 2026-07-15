@@ -121,59 +121,100 @@ $about = dm_legal_about_args(
 </section>
 
 <!-- ============ ATTRACTION CONTACT ============ -->
+<?php
+/*
+ * This block shares its content with the Fixed Prices page. It is edited via
+ * the "Attraction Contact Section" metabox on Pages → Fixed Prices, and pulled
+ * in here from that page's meta so both pages stay in sync. Blank fields fall
+ * back to the defaults below.
+ */
+$dm_fp    = get_page_by_path( 'fixed-prices' );
+$dm_fp_id = $dm_fp instanceof WP_Post ? (int) $dm_fp->ID : 0;
+$dm_ac    = dm_legal_ac_args(
+  array(
+    'title'    => 'Limited slots available — Book your consultation now',
+    'intro'    => 'You can choose any format of consultation with our lawyer:',
+    'options'  => $options,
+    'btn_text' => 'Book a Consultation',
+    'btn_href' => 'book-your-lawyer.php',
+  ),
+  $dm_fp_id
+);
+?>
 <section class="attraction-contact" data-aos="fade-up">
   <div class="content-width attraction-contact__row">
-    <h2 class="main-header attraction-contact__title">Limited slots available &mdash; Book your consultation now</h2>
+    <h2 class="main-header attraction-contact__title"><?= e( $dm_ac['title'] ) ?></h2>
     <div class="attraction-contact__intro">
-      <p class="measure-sm">You can choose any format of consultation with our lawyer:</p>
-      <a class="btn btn-primary btn-consult-up" href="<?= url( 'book-your-lawyer.php' ) ?>">Book a Consultationup</a>
+      <p class="measure-sm"><?= e( $dm_ac['intro'] ) ?></p>
+      <?php if ( ! empty( $dm_ac['btn_text'] ) ) : ?>
+        <a class="btn btn-primary btn-consult-up" href="<?= url( $dm_ac['btn_href'] ) ?>"><?= e( $dm_ac['btn_text'] ) ?></a>
+      <?php endif; ?>
 
       <div class="attraction-contact__options">
-        <?php foreach ( $options as $option ) : ?>
+        <?php foreach ( $dm_ac['options'] as $option ) : ?>
           <div class="attraction-contact__option">
-            <img src="<?= url( $option['icon'] ) ?>" alt="">
+            <?php if ( ! empty( $option['icon'] ) ) : ?>
+              <img src="<?= url( $option['icon'] ) ?>" alt="">
+            <?php endif; ?>
             <p><?= e( $option['label'] ) ?></p>
           </div>
         <?php endforeach; ?>
       </div>
-      <a class="btn btn-primary btn-consult" href="<?= url( 'book-your-lawyer.php' ) ?>">Book a Consultation</a>
+      <?php if ( ! empty( $dm_ac['btn_text'] ) ) : ?>
+        <a class="btn btn-primary btn-consult" href="<?= url( $dm_ac['btn_href'] ) ?>"><?= e( $dm_ac['btn_text'] ) ?></a>
+      <?php endif; ?>
     </div>
   </div>
 </section>
 
 <!-- ============ EXPRESSION SECTION ============ -->
+<?php
+$expr = dm_legal_expr_args(
+  array(
+    'heading'   => 'Expert Guidance from Accredited Legal Professionals',
+    'body'      => array(
+      'At DM Legal Services, we understand that successfully navigating Australia’s legal and immigration systems requires far more than general knowledge. It demands an in-depth understanding of complex regulations, procedural requirements, and evolving legal frameworks.',
+      'We recognise that every client’s situation is unique. That is why we provide tailored advice and bespoke strategies designed to address the specific needs of each client, ensuring they are fully informed, confident, and strategically positioned to achieve their goals.',
+      'Our comprehensive services cover a wide range of visa and immigration matters, including family visas, student visas, business visas, temporary work visas, general skilled migration visas, and working holiday visas.',
+      'With DM Legal Services, you can be confident that every aspect of your journey is guided by accredited professionals who prioritise your success and streamline complex processes.',
+    ),
+    'image'     => url( 'assets/images/expert-euidance1.png' ),
+    'image_alt' => 'Expert guidance from accredited legal professionals',
+  )
+);
+?>
 <section class="content-width content-gapping split-section" data-aos="fade-up">
   <div class="split-section__text">
-    <h2 class="secondary-header text-center">Expert Guidance from Accredited Legal Professionals</h2>
+    <h2 class="secondary-header text-center"><?= e( $expr['heading'] ) ?></h2>
     <div class="text-stack">
-      <p class="body-text text-justify">At DM Legal Services, we understand that successfully navigating
-        Australia&rsquo;s legal and immigration systems requires far more than general knowledge. It demands an in-depth
-        understanding of complex regulations, procedural requirements, and evolving legal frameworks.</p>
-      <p class="body-text text-justify">We recognise that every client&rsquo;s situation is unique. That is why we
-        provide tailored advice and bespoke strategies designed to address the specific needs of each client, ensuring
-        they are fully informed, confident, and strategically positioned to achieve their goals.</p>
-      <p class="body-text text-justify">Our comprehensive services cover a wide range of visa and immigration matters,
-        including family visas, student visas, business visas, temporary work visas, general skilled migration visas,
-        and working holiday visas.</p>
-      <p class="body-text text-justify">With DM Legal Services, you can be confident that every aspect of your journey
-        is guided by accredited professionals who prioritise your success and streamline complex processes.</p>
+      <?php foreach ( $expr['body'] as $paragraph ) : ?>
+        <p class="body-text text-justify"><?= e( $paragraph ) ?></p>
+      <?php endforeach; ?>
     </div>
   </div>
   <div class="split-section__media">
-    <img src="<?= url( 'assets/images/expert-euidance1.png' ) ?>"
-      alt="Expert guidance from accredited legal professionals" loading="lazy" decoding="async">
+    <img src="<?= e( $expr['image'] ) ?>" alt="<?= e( $expr['image_alt'] ) ?>" loading="lazy" decoding="async">
   </div>
 </section>
 
 <!-- ============ WHY CHOOSE US ============ -->
+<?php
+$wcu = dm_legal_wcu_args(
+  array(
+    'heading'  => 'Why To Choose Us',
+    'lead'     => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+    'stats'    => $statsData,
+    'services' => $serviceData,
+  )
+);
+?>
 <section class="content-width content-gapping">
   <div class="section-heading" data-aos="fade-up">
-    <h2 class="secondary-header">Why To Choose Us</h2>
-    <p class="body-text">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and
-      support in matters related to divorce, child custody, spousal support, and more.</p>
+    <h2 class="secondary-header"><?= e( $wcu['heading'] ) ?></h2>
+    <p class="body-text"><?= e( $wcu['lead'] ) ?></p>
   </div>
   <div class="stats-grid">
-    <?php foreach ( $statsData as $i => $stat ) : ?>
+    <?php foreach ( $wcu['stats'] as $i => $stat ) : ?>
       <div class="stat-item" data-aos="zoom-in" data-aos-delay="<?= $i * 150 ?>">
         <h3><?= e( $stat['value'] ) ?></h3>
         <p><?= e( $stat['label'] ) ?></p>
@@ -181,9 +222,11 @@ $about = dm_legal_about_args(
     <?php endforeach; ?>
   </div>
   <div class="services-row" data-aos="fade-up" data-aos-delay="200">
-    <?php foreach ( $serviceData as $service ) : ?>
+    <?php foreach ( $wcu['services'] as $service ) : ?>
       <div class="card-service">
-        <div class="card-service__icon"><img src="<?= url( $service['image'] ) ?>" alt=""></div>
+        <?php if ( ! empty( $service['image'] ) ) : ?>
+          <div class="card-service__icon"><img src="<?= url( $service['image'] ) ?>" alt=""></div>
+        <?php endif; ?>
         <h3><?= e( $service['title'] ) ?></h3>
         <p><?= e( $service['description'] ) ?></p>
       </div>
@@ -192,13 +235,21 @@ $about = dm_legal_about_args(
 </section>
 
 <!-- ============ AFFILIATIONS ============ -->
+<?php
+$aff = dm_legal_aff_args(
+  array(
+    'heading' => 'Our Affiliations & Membership',
+    'lead'    => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+    'logos'   => $affiliations,
+  )
+);
+?>
 <section class="affiliation-section content-gapping" data-aos="fade-up">
-  <h2 class="secondary-header">Our Affiliations &amp; Membership</h2>
-  <p class="body-text">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and
-    support in matters related to divorce, child custody, spousal support, and more.</p>
+  <h2 class="secondary-header"><?= e( $aff['heading'] ) ?></h2>
+  <p class="body-text"><?= e( $aff['lead'] ) ?></p>
   <div class="affiliation-logos">
-    <?php foreach ( $affiliations as $item ) : ?>
-      <div class="affiliation-logos__item" data-aos="zoom-in" data-aos-delay="<?= $item['id'] * 100 ?>">
+    <?php foreach ( $aff['logos'] as $i => $item ) : ?>
+      <div class="affiliation-logos__item" data-aos="zoom-in" data-aos-delay="<?= ( $i + 1 ) * 100 ?>">
         <img src="<?= url( $item['image'] ) ?>" alt="<?= e( $item['alt'] ) ?>" loading="lazy" decoding="async">
       </div>
     <?php endforeach; ?>
@@ -206,50 +257,72 @@ $about = dm_legal_about_args(
 </section>
 
 <!-- ============ GET SUPPORT ============ -->
+<?php
+$gs = dm_legal_gs_args(
+  array(
+    'heading'     => 'Professional Legal Support',
+    'body_top'    => array(
+      'Our professional team at DM Legal Services is committed to delivering exceptional legal support across all areas of law, ensuring each client receives the guidance, representation, and attention they deserve.',
+      'We work exclusively with fully accredited and highly experienced legal professionals who are recognised for their integrity, skill, and dedication to client success.',
+      'Navigating the Australian legal system can be challenging. Our role is to simplify this process for you by offering personalised strategies, clear advice, and hands-on support.',
+    ),
+    'features'    => array( 'Business Law', 'Commercial Law', 'Criminal Law', 'Family Law', 'Debt Recovery', 'Immigration Law' ),
+    'body_bottom' => 'Our commitment to professional excellence and attention to detail ensures that every client receives thorough guidance, effective representation, and the confidence to navigate their legal matters successfully.',
+    'image'       => url( 'assets/images/ProfessionalLegalSupport.jpg' ),
+    'image_alt'   => 'Professional legal support',
+  )
+);
+?>
 <section class="content-width content-gapping text-center" data-aos="fade-up">
-  <h2 class="secondary-header">Professional Legal Support</h2>
+  <h2 class="secondary-header"><?= e( $gs['heading'] ) ?></h2>
   <div class="split-section">
     <div class="text-stack text-justify">
-      <p class="body-text">Our professional team at DM Legal Services is committed to delivering exceptional legal
-        support across all areas of law, ensuring each client receives the guidance, representation, and attention they
-        deserve.</p>
-      <p class="body-text">We work exclusively with fully accredited and highly experienced legal professionals who are
-        recognised for their integrity, skill, and dedication to client success.</p>
-      <p class="body-text">Navigating the Australian legal system can be challenging. Our role is to simplify this
-        process for you by offering personalised strategies, clear advice, and hands-on support.</p>
+      <?php foreach ( $gs['body_top'] as $paragraph ) : ?>
+        <p class="body-text"><?= e( $paragraph ) ?></p>
+      <?php endforeach; ?>
       <ul class="feature-check-list">
-        <?php foreach ( array( 'Business Law', 'Commercial Law', 'Criminal Law', 'Family Law', 'Debt Recovery', 'Immigration Law' ) as $feature ) : ?>
+        <?php foreach ( $gs['features'] as $feature ) : ?>
           <li><img src="<?= url( 'assets/icons/check.svg' ) ?>" alt=""><span><?= e( $feature ) ?></span></li>
         <?php endforeach; ?>
       </ul>
-      <p class="body-text">Our commitment to professional excellence and attention to detail ensures that every client
-        receives thorough guidance, effective representation, and the confidence to navigate their legal matters
-        successfully.</p>
+      <?php if ( ! empty( $gs['body_bottom'] ) ) : ?>
+        <p class="body-text"><?= e( $gs['body_bottom'] ) ?></p>
+      <?php endif; ?>
     </div>
     <div class="split-section__media">
-      <img src="<?= url( 'assets/images/ProfessionalLegalSupport.jpg' ) ?>" alt="Professional legal support"
-        loading="lazy" decoding="async">
+      <img src="<?= e( $gs['image'] ) ?>" alt="<?= e( $gs['image_alt'] ) ?>" loading="lazy" decoding="async">
     </div>
   </div>
 </section>
 
 <!-- ============ HOW WE WORK ============ -->
+<?php
+$hww = dm_legal_hww_args(
+  array(
+    'heading' => 'How We Work',
+    'lead'    => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal support, and more.',
+    'steps'   => $steps,
+  )
+);
+$hww_steps = $hww['steps'];
+?>
 <section class="content-width content-gapping text-center">
   <div data-aos="fade-up">
-    <h2 class="secondary-header">How We Work</h2>
-    <p class="body-text section-lead">Our team of experienced family lawyers is dedicated to providing comprehensive
-      assistance and support in matters related to divorce, child custody, spousal support, and more.</p>
+    <h2 class="secondary-header"><?= e( $hww['heading'] ) ?></h2>
+    <p class="body-text section-lead"><?= e( $hww['lead'] ) ?></p>
   </div>
   <div class="steps-grid">
     <div class="steps-grid__list">
-      <?php foreach ( $steps as $i => $step ) : ?>
+      <?php foreach ( $hww_steps as $i => $step ) : ?>
         <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
           <div class="step-card">
-            <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+            <?php if ( ! empty( $step['image'] ) ) : ?>
+              <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+            <?php endif; ?>
             <h3><?= e( $step['title'] ) ?></h3>
             <p><?= e( $step['description'] ) ?></p>
           </div>
-          <?php if ( $i < count( $steps ) - 1 ) : ?>
+          <?php if ( $i < count( $hww_steps ) - 1 ) : ?>
             <div class="step-arrow-down"><img src="<?= url( 'assets/icons/arrow-down.svg' ) ?>" alt="" width="30" height="30">
             </div>
             <div class="step-arrow-right"><img src="<?= url( 'assets/icons/arrow.svg' ) ?>" alt="" width="80" height="60">
