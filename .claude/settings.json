@@ -10,7 +10,10 @@
       "Bash(cp c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/data.php /tmp/data.bak)",
       "Bash(sed -i 552,615d c:/laragon/www/dm-legal/wp-content/themes/dm-legal/inc/data.php)",
       "Bash(curl -s \"http://dm-legal.test/contact/\")",
-      "Bash(grep -oE '<b>\\(Fatal error|Warning|Parse error\\)</b>.{0,300}')"
+      "Bash(grep -oE '<b>\\(Fatal error|Warning|Parse error\\)</b>.{0,300}')",
+      "Bash(php -l inc/metaboxes.php)",
+      "Bash(php -l front-page.php)",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\"; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")"
     ]
   }
 }

@@ -66,20 +66,23 @@ get_header();
 </div>
 
 <!-- ============ ABOUT ============ -->
+<?php
+$about = dm_legal_about_args(
+  array(
+    'heading'   => 'About DM Legal Services',
+    'body'      => 'Our professional team at DM Legal Services is committed to delivering exceptional legal support across all areas of law, ensuring each client receives the guidance, representation, and attention they deserve. We stay constantly updated on the latest legal developments and regulatory changes to prevent unnecessary delays and provide solutions that are both practical and effective. We work exclusively with fully accredited and highly experienced legal professionals who are recognised for their integrity, skill, and dedication to client success. Navigating the Australian legal system can be challenging, and our role is to simplify this process for you with personalised strategies, clear advice, and hands-on support to achieve the best possible outcome.',
+    'image'     => url( 'assets/images/AboutDMLegalService.jpeg' ),
+    'image_alt' => 'About DM Legal Services',
+  )
+);
+?>
 <section class="content-width content-gapping split-section" data-aos="fade-up">
   <div class="split-section__text">
-    <h2 class="secondary-header">About DM Legal Services</h2>
-    <p class="body-text text-justify">Our professional team at DM Legal Services is committed to delivering exceptional
-      legal support across all areas of law, ensuring each client receives the guidance, representation, and attention
-      they deserve. We stay constantly updated on the latest legal developments and regulatory changes to prevent
-      unnecessary delays and provide solutions that are both practical and effective. We work exclusively with fully
-      accredited and highly experienced legal professionals who are recognised for their integrity, skill, and
-      dedication to client success. Navigating the Australian legal system can be challenging, and our role is to
-      simplify this process for you with personalised strategies, clear advice, and hands-on support to achieve the best
-      possible outcome.</p>
+    <h2 class="secondary-header"><?= e( $about['heading'] ) ?></h2>
+    <p class="body-text text-justify"><?= e( $about['body'] ) ?></p>
   </div>
   <div class="split-section__media">
-    <img src="<?= url( 'assets/images/AboutDMLegalService.jpeg' ) ?>" class="img-fill" alt="About DM Legal Services">
+    <img src="<?= e( $about['image'] ) ?>" class="img-fill" alt="<?= e( $about['image_alt'] ) ?>">
   </div>
 </section>
 

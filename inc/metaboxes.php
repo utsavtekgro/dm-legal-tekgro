@@ -53,6 +53,17 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 		'high'
 	);
 
+	if ( $post instanceof WP_Post && 'home' === $post->post_name ) {
+		add_meta_box(
+			'dm_legal_about',
+			__( 'About Section', 'dm-legal' ),
+			'dm_legal_render_about_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+	}
+
 	if ( $post instanceof WP_Post && 'fixed-prices' === $post->post_name ) {
 		add_meta_box(
 			'dm_legal_why_fixed_fees',
@@ -1778,6 +1789,161 @@ function dm_legal_vheading_args( array $defaults = array(), $post_id = 0 ) {
 	$lead = trim( (string) get_post_meta( $post_id, '_dm_vh_lead', true ) );
 	if ( '' !== $lead ) {
 		$args['lead'] = $lead;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * ABOUT SECTION (Home / front page)
+ * ================================================================== */
+
+/**
+ * Render the About metabox: heading, body text, and image.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_about_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_about', 'dm_legal_about_nonce' );
+
+	$heading = get_post_meta( $post->ID, '_dm_about_heading', true );
+	$body    = get_post_meta( $post->ID, '_dm_about_body', true );
+	$image   = get_post_meta( $post->ID, '_dm_about_image', true );
+	$alt     = get_post_meta( $post->ID, '_dm_about_image_alt', true );
+	?>
+	<style>
+		.dm-about-field { margin-bottom:14px; }
+		.dm-about-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-about-field input[type=text], .dm-about-field input[type=url], .dm-about-field textarea { width:100%; max-width:760px; }
+		.dm-about-preview { max-width:220px; height:auto; display:block; margin-bottom:8px; border:1px solid #dcdcde; border-radius:4px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-about-field">
+		<label for="dm_about_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_about_heading" name="_dm_about_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="About DM Legal Services">
+	</div>
+
+	<div class="dm-about-field">
+		<label for="dm_about_body"><?php esc_html_e( 'Body Text', 'dm-legal' ); ?></label>
+		<textarea id="dm_about_body" name="_dm_about_body" rows="6"><?php echo esc_textarea( $body ); ?></textarea>
+	</div>
+
+	<div class="dm-about-field">
+		<label for="dm_about_image"><?php esc_html_e( 'Image', 'dm-legal' ); ?></label>
+		<img src="<?php echo esc_url( $image ); ?>" class="dm-about-preview" id="dm_about_preview" <?php echo $image ? '' : 'style="display:none;"'; ?> alt="">
+		<input type="url" id="dm_about_image" name="_dm_about_image" value="<?php echo esc_attr( $image ); ?>" placeholder="<?php esc_attr_e( 'Image URL', 'dm-legal' ); ?>">
+		<p style="margin-top:6px;">
+			<button type="button" class="button" id="dm_about_image_select"><?php esc_html_e( 'Select Image', 'dm-legal' ); ?></button>
+			<button type="button" class="button" id="dm_about_image_clear"><?php esc_html_e( 'Clear', 'dm-legal' ); ?></button>
+		</p>
+	</div>
+
+	<div class="dm-about-field">
+		<label for="dm_about_image_alt"><?php esc_html_e( 'Image Alt Text', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_about_image_alt" name="_dm_about_image_alt" value="<?php echo esc_attr( $alt ); ?>" placeholder="About DM Legal Services">
+	</div>
+
+	<script>
+	(function ($) {
+		var frame;
+		$('#dm_about_image_select').on('click', function (e) {
+			e.preventDefault();
+			if (frame) { frame.open(); return; }
+			frame = wp.media({
+				title: '<?php echo esc_js( __( 'Select About Image', 'dm-legal' ) ); ?>',
+				button: { text: '<?php echo esc_js( __( 'Use this image', 'dm-legal' ) ); ?>' },
+				library: { type: 'image' },
+				multiple: false
+			});
+			frame.on('select', function () {
+				var url = frame.state().get('selection').first().toJSON().url;
+				$('#dm_about_image').val(url);
+				$('#dm_about_preview').attr('src', url).show();
+			});
+			frame.open();
+		});
+		$('#dm_about_image_clear').on('click', function (e) {
+			e.preventDefault();
+			$('#dm_about_image').val('');
+			$('#dm_about_preview').hide();
+		});
+	})(jQuery);
+	</script>
+	<?php
+}
+
+/**
+ * Save the About metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_about_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_about_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_about_nonce'] ) ), 'dm_legal_save_about' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_about_heading'   => 'sanitize_text_field',
+		'_dm_about_body'      => 'sanitize_textarea_field',
+		'_dm_about_image'     => 'esc_url_raw',
+		'_dm_about_image_alt' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_about_metabox' );
+
+/**
+ * Merge saved About meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, body, image, image_alt.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_about_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$map = array(
+		'heading'   => '_dm_about_heading',
+		'body'      => '_dm_about_body',
+		'image'     => '_dm_about_image',
+		'image_alt' => '_dm_about_image_alt',
+	);
+
+	foreach ( $map as $arg_key => $meta_key ) {
+		$value = trim( (string) get_post_meta( $post_id, $meta_key, true ) );
+		if ( '' !== $value ) {
+			$args[ $arg_key ] = $value;
+		}
 	}
 
 	return $args;
