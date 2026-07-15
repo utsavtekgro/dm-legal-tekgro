@@ -117,6 +117,15 @@ function dm_legal_add_hero_metabox( $post_type, $post ) {
 			'high'
 		);
 
+		add_meta_box(
+			'dm_legal_latest_blogs',
+			__( 'Latest Blogs Section', 'dm-legal' ),
+			'dm_legal_render_lb_metabox',
+			'page',
+			'normal',
+			'high'
+		);
+
 		// Reuses the same FAQ metabox as the Fixed Prices page. Meta is
 		// per-post, so the Home page stores its own questions.
 		add_meta_box(
@@ -3213,6 +3222,149 @@ function dm_legal_news_args( array $defaults = array(), $post_id = 0 ) {
 	$items = get_post_meta( $post_id, '_dm_news_items', true );
 	if ( is_array( $items ) && ! empty( $items ) ) {
 		$args['items'] = $items;
+	}
+
+	return $args;
+}
+
+/* =====================================================================
+ * LATEST BLOGS SECTION (Home / front page)
+ *
+ * The blog cards come from the shared blog dataset; only the section's
+ * heading, lead, post count and "View All" button are editable here.
+ * ================================================================== */
+
+/**
+ * Render the Latest Blogs metabox.
+ *
+ * @param WP_Post $post Current post.
+ * @return void
+ */
+function dm_legal_render_lb_metabox( $post ) {
+	wp_nonce_field( 'dm_legal_save_lb', 'dm_legal_lb_nonce' );
+
+	$heading   = get_post_meta( $post->ID, '_dm_lb_heading', true );
+	$lead      = get_post_meta( $post->ID, '_dm_lb_lead', true );
+	$count     = get_post_meta( $post->ID, '_dm_lb_count', true );
+	$view_text = get_post_meta( $post->ID, '_dm_lb_view_text', true );
+	$view_href = get_post_meta( $post->ID, '_dm_lb_view_href', true );
+	?>
+	<style>
+		.dm-lb-field { margin-bottom:14px; }
+		.dm-lb-field > label { display:block; font-weight:600; margin-bottom:4px; }
+		.dm-lb-field input[type=text], .dm-lb-field textarea { width:100%; max-width:760px; }
+		.dm-lb-field input[type=number] { width:100px; }
+		.dm-lb-btn-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:760px; }
+	</style>
+
+	<p class="description">
+		<?php esc_html_e( 'The blog cards are pulled from the site\'s blog content. Only the heading, lead, count and button are editable here. Leave a field blank to keep the template default.', 'dm-legal' ); ?>
+	</p>
+
+	<div class="dm-lb-field">
+		<label for="dm_lb_heading"><?php esc_html_e( 'Heading', 'dm-legal' ); ?></label>
+		<input type="text" id="dm_lb_heading" name="_dm_lb_heading" value="<?php echo esc_attr( $heading ); ?>" placeholder="Our Latest Blogs">
+	</div>
+
+	<div class="dm-lb-field">
+		<label for="dm_lb_lead"><?php esc_html_e( 'Lead Paragraph', 'dm-legal' ); ?></label>
+		<textarea id="dm_lb_lead" name="_dm_lb_lead" rows="2"><?php echo esc_textarea( $lead ); ?></textarea>
+	</div>
+
+	<div class="dm-lb-field">
+		<label for="dm_lb_count"><?php esc_html_e( 'Number of Posts', 'dm-legal' ); ?></label>
+		<input type="number" id="dm_lb_count" name="_dm_lb_count" value="<?php echo esc_attr( $count ); ?>" min="1" max="12" placeholder="3">
+	</div>
+
+	<h4><?php esc_html_e( 'View All Button', 'dm-legal' ); ?></h4>
+	<div class="dm-lb-btn-grid">
+		<input type="text" name="_dm_lb_view_text" value="<?php echo esc_attr( $view_text ); ?>" placeholder="<?php esc_attr_e( 'Button label, e.g. View All', 'dm-legal' ); ?>">
+		<input type="text" name="_dm_lb_view_href" value="<?php echo esc_attr( $view_href ); ?>" placeholder="<?php esc_attr_e( 'Link, e.g. blogs.php', 'dm-legal' ); ?>">
+	</div>
+	<p class="description"><?php esc_html_e( 'Clear the label to hide the button.', 'dm-legal' ); ?></p>
+	<?php
+}
+
+/**
+ * Save the Latest Blogs metabox.
+ *
+ * @param int $post_id Post being saved.
+ * @return void
+ */
+function dm_legal_save_lb_metabox( $post_id ) {
+	if ( ! isset( $_POST['dm_legal_lb_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['dm_legal_lb_nonce'] ) ), 'dm_legal_save_lb' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$simple = array(
+		'_dm_lb_heading'   => 'sanitize_text_field',
+		'_dm_lb_lead'      => 'sanitize_textarea_field',
+		'_dm_lb_view_text' => 'sanitize_text_field',
+		'_dm_lb_view_href' => 'sanitize_text_field',
+	);
+
+	foreach ( $simple as $key => $sanitiser ) {
+		$raw   = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = call_user_func( $sanitiser, $raw );
+
+		if ( '' === $value ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	// Count: a positive integer, or clear to fall back to the default.
+	$count = isset( $_POST['_dm_lb_count'] ) ? absint( wp_unslash( $_POST['_dm_lb_count'] ) ) : 0;
+	if ( $count > 0 ) {
+		update_post_meta( $post_id, '_dm_lb_count', $count );
+	} else {
+		delete_post_meta( $post_id, '_dm_lb_count' );
+	}
+}
+add_action( 'save_post_page', 'dm_legal_save_lb_metabox' );
+
+/**
+ * Merge saved Latest Blogs meta over the template defaults.
+ *
+ * @param array $defaults Keys: heading, lead, count, view_text, view_href.
+ * @param int   $post_id  Optional post ID; defaults to the queried page.
+ * @return array
+ */
+function dm_legal_lb_args( array $defaults = array(), $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+
+	if ( ! $post_id ) {
+		return $defaults;
+	}
+
+	$args = $defaults;
+
+	$map = array(
+		'heading'   => '_dm_lb_heading',
+		'lead'      => '_dm_lb_lead',
+		'view_text' => '_dm_lb_view_text',
+		'view_href' => '_dm_lb_view_href',
+	);
+
+	foreach ( $map as $arg_key => $meta_key ) {
+		$value = trim( (string) get_post_meta( $post_id, $meta_key, true ) );
+		if ( '' !== $value ) {
+			$args[ $arg_key ] = $value;
+		}
+	}
+
+	$count = (int) get_post_meta( $post_id, '_dm_lb_count', true );
+	if ( $count > 0 ) {
+		$args['count'] = $count;
 	}
 
 	return $args;

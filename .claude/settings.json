@@ -15,7 +15,8 @@
       "Bash(php -l front-page.php)",
       "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\"; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")",
       "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"front-page.php\")",
-      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\")"
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" -l \"inc\\\\metaboxes.php\")",
+      "Bash(grep -rn 'WP_Query\\\\|get_posts\\\\|$blogs\\\\s*=' inc/ blogs.php blog-detail.php)"
     ]
   }
 }

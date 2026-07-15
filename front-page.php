@@ -379,41 +379,82 @@ $news = dm_legal_news_args(
 </section>
 
 <!-- ============ LATEST BLOGS ============ -->
+<?php
+$lb = dm_legal_lb_args(
+  array(
+    'heading'   => 'Our Latest Blogs',
+    'lead'      => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support in matters related to divorce, child custody, spousal.',
+    'count'     => 3,
+    'view_text' => 'View All',
+    'view_href' => 'blogs.php',
+  )
+);
+?>
 <section class="content-width content-gapping" data-aos="fade-up">
-  <h2 class="secondary-header text-center">Our Latest Blogs</h2>
-  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing
-    comprehensive assistance and support in matters related to divorce, child custody, spousal.</p>
+  <h2 class="secondary-header text-center"><?= e( $lb['heading'] ) ?></h2>
+  <p class="body-text text-center section-lead--tight"><?= e( $lb['lead'] ) ?></p>
+  <?php
+  /*
+   * Cards are the latest published WordPress posts (Posts → All Posts), so
+   * they stay in sync with the News & Blog page. The count is set in the
+   * "Latest Blogs Section" metabox.
+   */
+  $dm_lb_query = new WP_Query(
+    array(
+      'post_type'      => 'post',
+      'post_status'    => 'publish',
+      'posts_per_page' => (int) $lb['count'],
+      'no_found_rows'  => true,
+      'ignore_sticky_posts' => true,
+    )
+  );
+  $dm_lb_fallback = '/assets/images/Blogs.jpeg';
+  ?>
   <div class="blog-grid">
     <?php
-    foreach ( array_slice( $blogs, 0, 3 ) as $blog ) :
-      $slug = slugify( $blog['title'] );
-      ?>
-      <div class="card-blog">
-        <div class="card-blog__media">
-          <a href="<?= url( 'blog-detail.php?slug=' . $slug ) ?>"><img src="<?= url( $blog['image'] ) ?>"
-              alt="<?= e( $blog['title'] ) ?>" loading="lazy" decoding="async"></a>
-        </div>
-        <div class="card-blog__meta">
-          <div class="card-blog__author">
-            <img src="<?= url( $blog['author']['avatar'] ) ?>" alt="">
-            <div>
-              <p><?= e( $blog['author']['name'] ) ?></p>
-              <p><?= e( $blog['author']['date'] ) ?></p>
+    if ( $dm_lb_query->have_posts() ) :
+      while ( $dm_lb_query->have_posts() ) :
+        $dm_lb_query->the_post();
+
+        $post_tags = get_the_tags();
+        $tag_names = $post_tags ? wp_list_pluck( $post_tags, 'name' ) : array();
+        $thumb     = get_the_post_thumbnail_url( get_the_ID(), 'large' );
+        $image     = $thumb ? $thumb : url( $dm_lb_fallback );
+        $avatar    = get_avatar_url( get_the_author_meta( 'ID' ), array( 'size' => 96 ) );
+        ?>
+        <div class="card-blog">
+          <div class="card-blog__media">
+            <a href="<?php the_permalink(); ?>"><img src="<?= e( $image ) ?>" alt="<?= e( get_the_title() ) ?>" loading="lazy" decoding="async"></a>
+          </div>
+          <div class="card-blog__meta">
+            <div class="card-blog__author">
+              <img src="<?= e( $avatar ) ?>" alt="" loading="lazy" decoding="async">
+              <div>
+                <p><?= e( get_the_author() ) ?></p>
+                <p><?= e( get_the_date( 'F j, Y' ) ) ?></p>
+              </div>
+            </div>
+            <div class="card-blog__tags">
+              <?php foreach ( $tag_names as $tag ) : ?><span><?= e( $tag ) ?></span><?php endforeach; ?>
             </div>
           </div>
-          <div class="card-blog__tags">
-            <?php foreach ( $blog['tags'] as $tag ) : ?><span><?= e( $tag ) ?></span><?php endforeach; ?>
-          </div>
+          <h3><?= e( get_the_title() ) ?></h3>
+          <p class="excerpt"><?= e( truncate_words( wp_strip_all_tags( get_the_excerpt() ), 20 ) ) ?></p>
+          <div class="card-blog__link"><a href="<?php the_permalink(); ?>">More Info &rsaquo;</a></div>
         </div>
-        <h3><?= e( $blog['title'] ) ?></h3>
-        <p class="excerpt"><?= e( truncate_words( $blog['excerpt'], 20 ) ) ?></p>
-        <div class="card-blog__link"><a href="<?= url( 'blog-detail.php?slug=' . $slug ) ?>">More Info &rsaquo;</a></div>
-      </div>
-    <?php endforeach; ?>
+        <?php
+      endwhile;
+      wp_reset_postdata();
+    else :
+      ?>
+      <p class="no-results">No blog posts published yet.</p>
+    <?php endif; ?>
   </div>
-  <div class="text-center mt-4">
-    <a class="btn btn-primary" href="<?= url( 'blogs.php' ) ?>">View All</a>
-  </div>
+  <?php if ( ! empty( $lb['view_text'] ) ) : ?>
+    <div class="text-center mt-4">
+      <a class="btn btn-primary" href="<?= url( $lb['view_href'] ) ?>"><?= e( $lb['view_text'] ) ?></a>
+    </div>
+  <?php endif; ?>
 </section>
 
 <!-- ============ FAQ ============ -->
