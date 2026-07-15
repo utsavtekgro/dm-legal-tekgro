@@ -19,7 +19,11 @@
       "Bash(grep -rn 'WP_Query\\\\|get_posts\\\\|$blogs\\\\s*=' inc/ blogs.php blog-detail.php)",
       "Bash(grep -rn 'find_practice_area_by_slug\\\\|register_post_type\\\\|$legalServicesData\\\\s*=\\\\|$practiceAreaInnerServices\\\\s*=\\\\|$actionsDataBySlug\\\\s*=\\\\|innerServiceCount' inc/ functions.php)",
       "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; $exe = \"$\\($php.FullName\\)\\\\php.exe\"; & $exe -l \"inc\\\\post-types.php\"; & $exe -l \"inc\\\\legacy-helpers.php\"; & $exe -l \"page-practice-area.php\"; & $exe -l \"functions.php\")",
-      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" \"C:\\\\Users\\\\soory\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--laragon-www-dm-legal-wp-content-themes-dm-legal\\\\030c2468-e986-4ce8-b641-86d9dc7dc98e\\\\scratchpad\\\\verify_pa.php\")"
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" \"C:\\\\Users\\\\soory\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--laragon-www-dm-legal-wp-content-themes-dm-legal\\\\030c2468-e986-4ce8-b641-86d9dc7dc98e\\\\scratchpad\\\\verify_pa.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; $exe = \"$\\($php.FullName\\)\\\\php.exe\"; & $exe -l \"inc\\\\practice-area-meta.php\"; & $exe -l \"page-practice-area.php\"; & $exe -l \"functions.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" \"C:\\\\Users\\\\soory\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--laragon-www-dm-legal-wp-content-themes-dm-legal\\\\030c2468-e986-4ce8-b641-86d9dc7dc98e\\\\scratchpad\\\\verify_detail.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; $exe = \"$\\($php.FullName\\)\\\\php.exe\"; & $exe -l \"single-practice-area.php\"; & $exe -l \"inc\\\\post-types.php\")",
+      "PowerShell($php = Get-ChildItem C:\\\\laragon\\\\bin\\\\php -Directory | Select-Object -First 1; & \"$\\($php.FullName\\)\\\\php.exe\" \"C:\\\\Users\\\\soory\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--laragon-www-dm-legal-wp-content-themes-dm-legal\\\\030c2468-e986-4ce8-b641-86d9dc7dc98e\\\\scratchpad\\\\flush.php\")"
     ]
   }
 }

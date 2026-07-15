@@ -19,19 +19,41 @@ $service = '' !== $slug ? find_practice_area_by_slug( $slug ) : null;
 // DETAIL VIEW — a specific practice area was requested
 // ===================================================================
 if ( '' !== $slug && $service ) :
-	$heroTitle      = 'Explore, Learn, and Grow – Your Journey Starts Here';
-	$heroSubtitle   = 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.';
+	$dm_pa_id = isset( $service['ID'] ) ? (int) $service['ID'] : 0;
+
+	// Hero content is editable per area via the "Detail Hero" metabox.
+	$dm_pa_hero = $dm_pa_id
+		? dm_legal_pa_hero_args(
+			array(
+				'title'    => 'Explore, Learn, and Grow – Your Journey Starts Here',
+				'subtitle' => 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.',
+				'image'    => '/assets/images/case-studies-bgimg.png',
+			),
+			$dm_pa_id
+		)
+		: array(
+			'title'    => 'Explore, Learn, and Grow – Your Journey Starts Here',
+			'subtitle' => 'With a proven track record of dismissed charges and reduced penalties, we defend your rights.',
+			'image'    => '/assets/images/case-studies-bgimg.png',
+		);
+
+	$heroTitle      = $dm_pa_hero['title'];
+	$heroSubtitle   = $dm_pa_hero['subtitle'];
 	$heroFeatures   = array( 'Fixed Fees', 'Hourly rates', 'Manage Legal Costs', 'No Win, No Fees' );
 	$heroSecondaryBtn = array( 'text' => 'Explore more', 'href' => 'index.php' );
 	$heroRightSide  = 'image';
-	$heroImage      = '/assets/images/case-studies-bgimg.png';
+	$heroImage      = $dm_pa_hero['image'];
 	$heroBreadcrumb = array(
 		array( 'label' => 'Practice Area', 'href' => 'practice-area.php' ),
 		array( 'label' => $service['title'] ),
 	);
 	include DM_LEGAL_DIR . '/inc/parts/hero.php';
 
-	$actionsData = $actionsDataBySlug[ $slug ] ?? null;
+	// Actions are editable per area via the "Actions Section" metabox, falling
+	// back to the static $actionsDataBySlug entry.
+	$actionsData = $dm_pa_id
+		? dm_legal_pa_actions( $dm_pa_id, $actionsDataBySlug[ $slug ] ?? null )
+		: ( $actionsDataBySlug[ $slug ] ?? null );
 	?>
 
 	<?php if ( $actionsData ) : ?>
@@ -100,6 +122,7 @@ if ( '' !== $slug && $service ) :
 	</section>
 
 	<!-- ============ Process ============ -->
+	<?php $dm_pa_steps = $dm_pa_id ? dm_legal_pa_steps( $dm_pa_id, $steps ) : $steps; ?>
 	<section class="content-width content-gapping text-center">
 	  <div data-aos="fade-up">
 	    <h2 class="secondary-header">Process for <?= e( $service['title'] ) ?></h2>
@@ -107,14 +130,16 @@ if ( '' !== $slug && $service ) :
 	  </div>
 	  <div class="steps-grid">
 	    <div class="steps-grid__four">
-	      <?php foreach ( $steps as $i => $step ) : ?>
+	      <?php foreach ( $dm_pa_steps as $i => $step ) : ?>
 	        <div class="step-item" data-aos="zoom-out-right" data-aos-delay="<?= $i * 150 ?>">
 	          <div class="step-card">
-	            <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+	            <?php if ( ! empty( $step['image'] ) ) : ?>
+	              <div class="step-card__icon"><img src="<?= url( $step['image'] ) ?>" alt="" width="40" height="40"></div>
+	            <?php endif; ?>
 	            <h3><?= e( $step['title'] ) ?></h3>
 	            <p><?= e( $step['description'] ) ?></p>
 	          </div>
-	          <?php if ( $i < count( $steps ) - 1 ) : ?>
+	          <?php if ( $i < count( $dm_pa_steps ) - 1 ) : ?>
 	            <div class="step-arrow-down"><img src="<?= url( 'assets/icons/arrow-down.svg' ) ?>" alt="" width="30" height="30"></div>
 	            <div class="step-arrow-right"><img src="<?= url( 'assets/icons/arrow.svg' ) ?>" alt="" width="80" height="60"></div>
 	          <?php endif; ?>
@@ -173,11 +198,27 @@ if ( '' !== $slug && $service ) :
 	</section>
 
 	<!-- ============ FAQ ============ -->
+	<?php
+	$dm_pa_faq = $dm_pa_id
+		? dm_legal_pa_faq_args(
+			array(
+				'heading' => 'Frequently Asked Questions',
+				'lead'    => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support.',
+				'items'   => $consultationCostFAQ,
+			),
+			$dm_pa_id
+		)
+		: array(
+			'heading' => 'Frequently Asked Questions',
+			'lead'    => 'Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support.',
+			'items'   => $consultationCostFAQ,
+		);
+	?>
 	<section class="content-width content-gapping">
-	  <h2 class="secondary-header text-center">Frequently Asked Questions</h2>
-	  <p class="body-text text-center section-lead--tight">Our team of experienced family lawyers is dedicated to providing comprehensive assistance and support.</p>
+	  <h2 class="secondary-header text-center"><?= e( $dm_pa_faq['heading'] ) ?></h2>
+	  <p class="body-text text-center section-lead--tight"><?= e( $dm_pa_faq['lead'] ) ?></p>
 	  <div class="faq-list" data-faq-list>
-	    <?php foreach ( $consultationCostFAQ as $faq ) : ?>
+	    <?php foreach ( $dm_pa_faq['items'] as $faq ) : ?>
 	      <div class="faq-item">
 	        <div class="faq-item__head">
 	          <h3><?= e( $faq['question'] ) ?></h3>

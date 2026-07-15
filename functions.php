@@ -60,6 +60,7 @@ $dm_legal_modules = array(
 	'legacy-helpers',     // Firm constants + WP-aware url()/e() + render helpers.
 	'post-types',         // Custom post types (Practice Area) + seeding.
 	'metaboxes',          // Per-page Hero Section metabox + dm_legal_hero_args().
+	'practice-area-meta', // Practice Area detail-view metaboxes (hero/actions/steps/faq).
 	'pages',              // Auto-provision the Pages backing the legacy templates.
 );
 

@@ -251,3 +251,23 @@ function dm_legal_practice_area_flush_rewrites() {
 	flush_rewrite_rules();
 }
 add_action( 'after_switch_theme', 'dm_legal_practice_area_flush_rewrites' );
+
+/**
+ * Route practice_area singles to single-practice-area.php.
+ *
+ * WordPress only auto-loads single-practice_area.php (underscore) for this CPT;
+ * this maps the theme's hyphenated file into the hierarchy instead.
+ *
+ * @param string $template Resolved template path.
+ * @return string
+ */
+function dm_legal_practice_area_single_template( $template ) {
+	if ( is_singular( 'practice_area' ) ) {
+		$custom = locate_template( 'single-practice-area.php' );
+		if ( $custom ) {
+			return $custom;
+		}
+	}
+	return $template;
+}
+add_filter( 'single_template', 'dm_legal_practice_area_single_template' );
