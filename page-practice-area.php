@@ -220,24 +220,49 @@ include DM_LEGAL_DIR . '/inc/parts/hero.php';
   </div>
   <div class="services-grid">
     <?php
-    foreach ( $legalServicesData as $idx => $service ) :
-      $svcSlug = slugify( $service['title'] );
-      ?>
-      <div class="card-law" data-aos="fade-up" data-aos-delay="<?= $idx * 100 ?>">
-        <div class="card-law__media">
-          <a href="<?= url( 'practice-area.php?slug=' . $svcSlug ) ?>">
-            <img src="<?= url( $service['image'] ) ?>" alt="<?= e( $service['title'] ) ?>" loading="lazy" decoding="async">
-          </a>
-        </div>
-        <div class="card-law__body">
-          <div>
-            <h3><?= e( $service['title'] ) ?></h3>
-            <p><?= e( truncate_words( $service['description'], 12 ) ) ?></p>
+    /*
+     * Practice areas are managed in wp-admin (Practice Areas → All). Ordered by
+     * the page-attributes "Order" field, then title.
+     */
+    $dm_pa_query = new WP_Query(
+      array(
+        'post_type'      => 'practice_area',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
+        'no_found_rows'  => true,
+      )
+    );
+
+    if ( $dm_pa_query->have_posts() ) :
+      $idx = 0;
+      while ( $dm_pa_query->have_posts() ) :
+        $dm_pa_query->the_post();
+        $svcSlug = get_post_field( 'post_name', get_the_ID() );
+        $svcDesc = has_excerpt() ? get_the_excerpt() : wp_strip_all_tags( get_the_content() );
+        ?>
+        <div class="card-law" data-aos="fade-up" data-aos-delay="<?= $idx * 100 ?>">
+          <div class="card-law__media">
+            <a href="<?= url( 'practice-area.php?slug=' . $svcSlug ) ?>">
+              <img src="<?= e( dm_legal_pa_image_url( get_the_ID() ) ) ?>" alt="<?= e( get_the_title() ) ?>" loading="lazy" decoding="async">
+            </a>
           </div>
-          <a class="card-law__link" href="<?= url( 'practice-area.php?slug=' . $svcSlug ) ?>">Read more &rsaquo;</a>
+          <div class="card-law__body">
+            <div>
+              <h3><?= e( get_the_title() ) ?></h3>
+              <p><?= e( truncate_words( $svcDesc, 12 ) ) ?></p>
+            </div>
+            <a class="card-law__link" href="<?= url( 'practice-area.php?slug=' . $svcSlug ) ?>">Read more &rsaquo;</a>
+          </div>
         </div>
-      </div>
-    <?php endforeach; ?>
+        <?php
+        $idx++;
+      endwhile;
+      wp_reset_postdata();
+    else :
+      ?>
+      <p class="no-results">No practice areas published yet.</p>
+    <?php endif; ?>
   </div>
 </section>
 

@@ -159,8 +159,23 @@ if ( ! function_exists( 'find_blog_by_slug' ) ) {
 }
 
 if ( ! function_exists( 'find_practice_area_by_slug' ) ) {
-	/** Find a practice area by slug from $legalServicesData. */
+	/**
+	 * Find a practice area by slug.
+	 *
+	 * Prefers the practice_area custom post type (managed in wp-admin) and
+	 * falls back to the static $legalServicesData array if the CPT has no
+	 * matching post, so nothing breaks during the transition.
+	 */
 	function find_practice_area_by_slug( $slug ) {
+		$slug = sanitize_title( $slug );
+
+		if ( post_type_exists( 'practice_area' ) && function_exists( 'dm_legal_practice_area_fields' ) ) {
+			$post = get_page_by_path( $slug, OBJECT, 'practice_area' );
+			if ( $post instanceof WP_Post && 'publish' === $post->post_status ) {
+				return dm_legal_practice_area_fields( $post );
+			}
+		}
+
 		global $legalServicesData;
 		foreach ( (array) $legalServicesData as $area ) {
 			if ( slugify( $area['title'] ) === $slug ) {
